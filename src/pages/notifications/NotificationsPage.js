@@ -109,6 +109,7 @@ const NotificationsPage = () => {
         <h1 className="page-title">
           <FaBell /> Notifications
           {unreadCount > 0 && <span className="unread-badge">{unreadCount}</span>}
+          }
         </h1>
         <div className="notifications-actions">
           {unreadCount > 0 && (

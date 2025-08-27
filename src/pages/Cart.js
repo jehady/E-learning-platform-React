@@ -127,6 +127,7 @@ const Cart = () => {
                     <span className="cart-recommend-price">${rec.price}</span>
                   </div>
                   {rec.tag && <span className="cart-recommend-tag">{rec.tag}</span>}
+                  }
                 </div>
               </div>
             ))}

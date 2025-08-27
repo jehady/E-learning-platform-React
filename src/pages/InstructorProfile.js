@@ -169,6 +169,7 @@ const InstructorProfile = () => {
                     <div className="profile-course-img-wrap">
                       <img src={course.image} alt={course.title} className="profile-course-img" />
                       {course.tag && <span className="profile-course-tag">{course.tag}</span>}
+                      }
                     </div>
                     <div className="profile-course-info">
                       <div className="profile-course-date">{course.date}</div>
@@ -179,6 +180,7 @@ const InstructorProfile = () => {
                       <div className="profile-course-rating-row">
                         <span className="profile-course-rating">★ {course.rating}</span>
                         {course.tag && <span className="profile-course-free">Free Document</span>}
+                        }
                       </div>
                       <p className="profile-course-desc">{course.description}</p>
                       <div className="profile-course-meta-row">
