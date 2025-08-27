@@ -1,6 +1,4 @@
 import React from 'react';
-import Header from '../components/Header';
-import Footer from '../components/Footer';
 import { Link } from 'react-router-dom';
 
 const MyCourses = () => {
@@ -48,7 +46,6 @@ const MyCourses = () => {
 
   return (
     <div className="page">
-      <Header />
       
       <div className="my-courses-container">
         <h1 className="page-title">MY COURSES</h1>
@@ -99,8 +96,6 @@ const MyCourses = () => {
           </div>
         </div>
       </div>
-      
-      <Footer />
     </div>
   );
 };

@@ -1,7 +1,5 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import Header from '../components/Header';
-import Footer from '../components/Footer';
 import './Cart.css';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements, CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
@@ -63,7 +61,6 @@ const Cart = () => {
 
   return (
     <div className="cart-page">
-      <Header />
       <main className="cart-main">
         {isEmpty ? (
           <div className="cart-empty-state">
@@ -136,7 +133,6 @@ const Cart = () => {
           </div>
         </section>
       </main>
-      <Footer />
     </div>
   );
 };

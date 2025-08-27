@@ -1,0 +1,409 @@
+.leaderboard-page {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.leaderboard-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 32px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.page-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.leaderboard-filters {
+  display: flex;
+  gap: 12px;
+}
+
+.filter-select {
+  padding: 10px 16px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.leaderboard-content {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.current-user-rank {
+  background: var(--bg-secondary);
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: var(--shadow-sm);
+}
+
+.rank-card {
+  background: linear-gradient(135deg, var(--primary-color) 0%, #764ba2 100%);
+  color: white;
+  border-radius: 12px;
+  padding: 24px;
+}
+
+.rank-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.rank-header h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.rank-position {
+  font-size: 2rem;
+}
+
+.rank-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+.rank-stat {
+  text-align: center;
+}
+
+.rank-stat .stat-value {
+  display: block;
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.rank-stat .stat-label {
+  font-size: 0.9rem;
+  opacity: 0.8;
+}
+
+.top-performers {
+  background: var(--bg-secondary);
+  border-radius: 16px;
+  padding: 32px;
+  box-shadow: var(--shadow-sm);
+}
+
+.top-performers h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 32px 0;
+  text-align: center;
+}
+
+.podium {
+  display: flex;
+  align-items: end;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.podium-position {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.position-1 {
+  order: 2;
+}
+
+.position-2 {
+  order: 1;
+}
+
+.position-3 {
+  order: 3;
+}
+
+.podium-user {
+  background: var(--bg-primary);
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: var(--shadow-md);
+  margin-bottom: 16px;
+  position: relative;
+}
+
+.position-1 .podium-user {
+  background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+  color: #b8860b;
+  transform: scale(1.1);
+}
+
+.position-2 .podium-user {
+  background: linear-gradient(135deg, #c0c0c0 0%, #e8e8e8 100%);
+  color: #696969;
+}
+
+.position-3 .podium-user {
+  background: linear-gradient(135deg, #cd7f32 0%, #daa520 100%);
+  color: #8b4513;
+}
+
+.podium-avatar {
+  position: relative;
+  margin-bottom: 12px;
+}
+
+.podium-avatar img {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid rgba(255, 255, 255, 0.5);
+}
+
+.badge-gold,
+.badge-silver,
+.badge-bronze {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  font-size: 20px;
+}
+
+.badge-gold { color: #ffd700; }
+.badge-silver { color: #c0c0c0; }
+.badge-bronze { color: #cd7f32; }
+
+.podium-name {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0 0 4px 0;
+}
+
+.podium-points {
+  font-size: 0.9rem;
+  margin: 0;
+  opacity: 0.8;
+}
+
+.podium-rank {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1.2rem;
+}
+
+.position-1 .podium-rank {
+  background: #ffd700;
+  color: #b8860b;
+}
+
+.position-2 .podium-rank {
+  background: #c0c0c0;
+  color: #696969;
+}
+
+.position-3 .podium-rank {
+  background: #cd7f32;
+  color: #8b4513;
+}
+
+.leaderboard-table {
+  background: var(--bg-secondary);
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: var(--shadow-sm);
+}
+
+.table-header {
+  margin-bottom: 24px;
+}
+
+.table-header h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.rankings-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.ranking-item {
+  background: var(--bg-primary);
+  border-radius: 12px;
+  padding: 20px;
+  border: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  transition: all 0.2s ease;
+}
+
+.ranking-item:hover {
+  box-shadow: var(--shadow-md);
+}
+
+.ranking-position {
+  width: 40px;
+  text-align: center;
+  font-size: 1.2rem;
+}
+
+.rank-number {
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.rank-gold { color: #ffd700; }
+.rank-silver { color: #c0c0c0; }
+.rank-bronze { color: #cd7f32; }
+
+.ranking-user {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex: 1;
+}
+
+.ranking-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.ranking-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.ranking-name {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.ranking-badges {
+  display: flex;
+  gap: 4px;
+}
+
+.ranking-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+  min-width: 300px;
+}
+
+.ranking-stat {
+  text-align: center;
+}
+
+.ranking-stat .stat-value {
+  display: block;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.ranking-stat .stat-label {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+/* Achievement Badges */
+.achievement-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 24px;
+}
+
+.achievement-badge {
+  background: var(--primary-light);
+  color: var(--primary-color);
+  padding: 8px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.achievement-badge.gold {
+  background: rgba(255, 215, 0, 0.1);
+  color: #b8860b;
+}
+
+.achievement-badge.silver {
+  background: rgba(192, 192, 192, 0.1);
+  color: #696969;
+}
+
+.achievement-badge.bronze {
+  background: rgba(205, 127, 50, 0.1);
+  color: #8b4513;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .leaderboard-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .leaderboard-filters {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .rank-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .podium {
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .podium-position {
+    order: initial !important;
+  }
+  
+  .ranking-stats {
+    grid-template-columns: repeat(2, 1fr);
+    min-width: auto;
+  }
+  
+  .ranking-item {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+  }
+}

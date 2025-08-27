@@ -1,8 +1,6 @@
 import React from 'react';
-import Header from '../components/Header';
 import CourseSection from '../components/CourseSection';
 import Banner from '../components/Banner';
-import Footer from '../components/Footer';
 
 const Home = () => {
   // Sample data for recommended courses
@@ -139,7 +137,6 @@ const Home = () => {
 
   return (
     <div className="page">
-      <Header />
       
       <CourseSection 
         title="Recommended for you" 
@@ -160,8 +157,6 @@ const Home = () => {
         courses={trendingCourses} 
         viewAllLink="/courses/trending" 
       />
-      
-      <Footer />
     </div>
   );
 };

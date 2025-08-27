@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import Header from '../components/Header';
-import Footer from '../components/Footer';
 import CourseGallery from '../components/CourseGallery';
 import CourseTabs from '../components/CourseTabs';
 import InstructorCard from '../components/InstructorCard';
@@ -74,7 +72,6 @@ const CourseDetails = () => {
 
   return (
     <div className="course-details-page">
-      <Header />
       <main className="cd-main">
         <section className="cd-header">
           <nav className="cd-breadcrumbs">
@@ -119,7 +116,6 @@ const CourseDetails = () => {
           </aside>
         </section>
       </main>
-      <Footer />
       <StripePaymentModal
         open={showStripe}
         onClose={() => setShowStripe(false)}

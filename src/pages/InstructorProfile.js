@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import Header from '../components/Header';
-import Footer from '../components/Footer';
 import './InstructorProfile.css';
 import CreateCourseModal from '../components/CreateCourseModal';
 import AddVideoModal from '../components/AddVideoModal';
@@ -116,7 +114,6 @@ const InstructorProfile = () => {
   
   return (
     <div className="profile-page">
-      <Header />
       <main className="profile-main">
         <div className="profile-breadcrumb">Home / UI/UX Design / Teacher's profile</div>
         {isTeacher && isOwnProfile && (
@@ -250,7 +247,6 @@ const InstructorProfile = () => {
           </aside>
         </div>
       </main>
-      <Footer />
       
       {/* Course Creation Modal */}
       {showCreateCourseModal && (

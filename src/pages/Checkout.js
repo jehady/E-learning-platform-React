@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import Header from '../components/Header';
-import Footer from '../components/Footer';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements, CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 
@@ -62,7 +60,6 @@ const Checkout = () => {
 
   return (
     <div className="checkout-page">
-      <Header />
       <main className="checkout-main">
         <div className="checkout-content-row">
           <section className="checkout-order-summary">
@@ -126,7 +123,6 @@ const Checkout = () => {
           </div>
         </section>
       </main>
-      <Footer />
     </div>
   );
 };
