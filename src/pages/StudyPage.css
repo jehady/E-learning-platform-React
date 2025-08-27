@@ -1,0 +1,254 @@
+/* Modern StudyPage Styles */
+
+.study-page {
+  background: #f7f8fa;
+  min-height: 100vh;
+  font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
+  color: #222;
+}
+
+.sp-main {
+  max-width: 1200px;
+  margin: 40px auto 0 auto;
+  padding: 0 20px 40px 20px;
+}
+
+.sp-breadcrumbs {
+  font-size: 0.98rem;
+  color: #888;
+  margin-bottom: 18px;
+}
+.sp-breadcrumbs span {
+  margin: 0 4px;
+}
+.sp-in-progress {
+  color: #6c63ff;
+  font-weight: 600;
+}
+
+.sp-top-section {
+  display: flex;
+  gap: 32px;
+  align-items: flex-start;
+}
+
+.sp-video-section {
+  flex: 2;
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.07);
+  padding: 32px 28px 28px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.sp-title {
+  font-size: 2.2rem;
+  font-weight: 700;
+  margin-bottom: 4px;
+  color: #1a1a1a;
+}
+
+.sp-meta {
+  display: flex;
+  gap: 18px;
+  font-size: 1.1rem;
+  color: #666;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.sp-instructor {
+  color: #6c63ff;
+  font-weight: 600;
+}
+.sp-rating {
+  color: #f7b731;
+  font-weight: 600;
+}
+.sp-reviews {
+  color: #888;
+  font-weight: 400;
+}
+
+.sp-video-player {
+  position: relative;
+  width: 100%;
+  max-width: 700px;
+  margin: 0 auto;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+.sp-video-player img {
+  width: 100%;
+  display: block;
+  border-radius: 16px;
+}
+.sp-video-overlay {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,0.08);
+}
+.sp-play-btn {
+  background: #fff;
+  color: #6c63ff;
+  border: none;
+  border-radius: 50%;
+  width: 64px;
+  height: 64px;
+  font-size: 2.2rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.sp-play-btn:hover {
+  background: #f7f8fa;
+}
+
+.sp-tabs {
+  display: flex;
+  gap: 18px;
+  margin-top: 18px;
+  border-bottom: 1.5px solid #ececec;
+}
+.sp-tabs button {
+  background: none;
+  border: none;
+  padding: 12px 18px;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #888;
+  cursor: pointer;
+  border-radius: 8px 8px 0 0;
+  transition: background 0.2s, color 0.2s;
+  margin-bottom: -2px;
+}
+.sp-tabs button.active, .sp-tabs button:hover {
+  background: #fff;
+  color: #1a1a1a;
+  border-bottom: 2.5px solid #6c63ff;
+}
+
+.sp-sessions-section {
+  flex: 1;
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.07);
+  padding: 28px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  min-width: 260px;
+  max-width: 320px;
+}
+.sp-sessions-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 600;
+  color: #6c63ff;
+  margin-bottom: 10px;
+}
+.sp-sessions-progress {
+  color: #888;
+  font-size: 0.98rem;
+  font-weight: 400;
+}
+.sp-sessions-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.sp-sessions-list li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 8px;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #222;
+  background: #f7f8fa;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  position: relative;
+}
+.sp-sessions-list li.completed {
+  color: #27ae60;
+  background: #eafaf1;
+}
+.sp-sessions-list li.active {
+  color: #fff;
+  background: #6c63ff;
+}
+.sp-session-index {
+  font-size: 0.98rem;
+  font-weight: 600;
+  color: #888;
+}
+.sp-sessions-list li.active .sp-session-index {
+  color: #fff;
+}
+.sp-session-title {
+  flex: 1;
+}
+.sp-session-check {
+  color: #27ae60;
+  font-size: 1.1rem;
+  margin-left: 8px;
+}
+.sp-session-current {
+  width: 8px;
+  height: 8px;
+  background: #fff;
+  border-radius: 50%;
+  margin-left: 8px;
+}
+
+.sp-save-btn, .sp-share-btn {
+  margin-top: 12px;
+  background: #ecebfc;
+  color: #6c63ff;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 18px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+  width: 100%;
+}
+.sp-save-btn:hover, .sp-share-btn:hover {
+  background: #6c63ff;
+  color: #fff;
+}
+
+@media (max-width: 900px) {
+  .sp-top-section {
+    flex-direction: column;
+    gap: 24px;
+  }
+  .sp-sessions-section {
+    max-width: 100%;
+    min-width: 0;
+  }
+}
+
+@media (max-width: 600px) {
+  .sp-main {
+    padding: 0 6px 24px 6px;
+  }
+  .sp-video-section, .sp-sessions-section {
+    padding: 14px 8px;
+  }
+  .sp-tabs button {
+    padding: 8px 8px;
+    font-size: 0.95rem;
+  }
+} 
