@@ -6,6 +6,7 @@ import axios from 'axios';
 import { apiService } from '../utils/api';
 import FormInput from '../components/FormInput';
 import RadioGroup from '../components/RadioGroup';
+import './SignUpModern.css';
 
 const SignUpModern = () => {
   const [formData, setFormData] = useState({

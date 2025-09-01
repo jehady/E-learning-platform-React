@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { authService } from '../services/authService'; // Import our authentication service
+import './SignIn.css';
 
 const SignIn = () => {
   const [loginIdentifier, setLoginIdentifier] = useState('');
@@ -17,7 +18,7 @@ const SignIn = () => {
     try {
       // Authenticate user
       const userData = await authService.signIn(loginIdentifier, password);
-      
+      console.log('userData', userData);
       // Check if email is verified (if needed)
       // if (!userData.email_verified_at) {
       //   setError('Please verify your email address before signing in. Check your inbox for the verification link.');

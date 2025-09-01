@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements, CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
+import './Checkout.css';
 
 const orderCourses = [
   { id: 1, title: 'UI Design, A User Approach', instructor: 'Klara Weaver', price: 49, image: 'https://randomuser.me/api/portraits/men/32.jpg' },
@@ -89,7 +90,6 @@ const Checkout = () => {
               <button className="checkout-voucher-apply" onClick={() => setVoucherApplied(true)} disabled={voucherApplied || voucher !== '15 OFF'}>Apply</button>
             </div>
             {voucherApplied && <div className="checkout-voucher-badge">$15 OFF</div>}
-            }
             <div className="checkout-summary-box">
               <div className="checkout-summary-row"><span>Subtotal</span><span>${subtotal}</span></div>
               <div className="checkout-summary-row"><span>Discount</span><span>-${discount}</span></div>
@@ -118,7 +118,6 @@ const Checkout = () => {
                     <span className="checkout-recommend-price">${rec.price}</span>
                   </div>
                   {rec.tag && <span className="checkout-recommend-tag">{rec.tag}</span>}
-                  }
                 </div>
               </div>
             ))}

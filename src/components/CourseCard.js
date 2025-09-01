@@ -5,7 +5,7 @@ const CourseCard = ({ course }) => {
   return (
     <Link to={`/course/${course.id}`} className="course-card-modern">
       <div className="course-card-img-wrap">
-        <img src={course.image} alt={course.title} className="course-card-img" />
+        <img src={course.image} alt={course.title} className="course-card-img" loading="lazy" />
         {course.tag && (
           <span className={`course-card-tag tag-${course.tag.toLowerCase()}`}>{course.tag}</span>
         )}

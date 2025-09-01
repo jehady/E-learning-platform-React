@@ -1,12 +1,13 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
-@import './pages/Checkout.css';
-@import './components/Layout/Layout.css';
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
-body {
-  font-family: 'Inter', Arial, sans-serif;
-  background: #f7f8fa;
-  margin: 0;
-  padding: 0;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply font-sans bg-gray-50 m-0 p-0;
+  }
 }
 
 .landing-hero-v2 {
@@ -2576,6 +2577,35 @@ body {
   top: 0;
   z-index: 1000;
 }
+
+/* --- Compact Top Bar for Women/Child --- */
+.compact-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 1001;
+  background: #ffffffcc;
+  backdrop-filter: blur(6px);
+  border-bottom: 1px solid #eef0f4;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+}
+.ctb-left { display: flex; gap: 14px; align-items: center; }
+.ctb-right { display: flex; gap: 12px; align-items: center; }
+.ctb-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  color: #475569;
+  text-decoration: none;
+  font-weight: 600;
+}
+.ctb-link.active { background: #eef2ff; color: #4f46e5; }
+.ctb-icon { color: #64748b; font-size: 1.1rem; }
+.ctb-icon:hover { color: #4f46e5; }
 .header-container {
   max-width: 1300px;
   margin: 0 auto;

@@ -3,8 +3,8 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { 
-  FaBook, FaUsers, FaDollarSign, FaEye, 
-  FaPlus, FaChartLine, FaStar, FaComments 
+  FaBook, FaUsers, FaDollarSign, FaEye,
+  FaPlus, FaChartLine, FaStar, FaComments, FaEdit
 } from 'react-icons/fa';
 import './TrainerDashboard.css';
 

@@ -19,10 +19,13 @@ class AuthService {
         password
       });
 
+      // API returns { data: { ...user, roles, permissions, token }, message, code }
+      const payload = response && response.data ? response.data : response;
+
       // Store user data and tokens
-      this.setAuthData(response);
+      this.setAuthData(payload);
       
-      return response;
+      return payload;
     } catch (error) {
       throw error;
     }
@@ -48,12 +51,17 @@ class AuthService {
    */
   setAuthData(userData) {
     // Make sure we have a token
-    if (!userData.token) {
+    if (!userData || !userData.token) {
       throw new Error('No authentication token received');
     }
 
-    // Store token and user data
-    localStorage.setItem('token', userData.token);
+    // Store token and user data (prefer sessionStorage for token privacy)
+    try {
+      sessionStorage.setItem('token', userData.token);
+    } catch (_) {
+      // Fallback only if sessionStorage is unavailable
+      localStorage.setItem('token', userData.token);
+    }
     localStorage.setItem('userData', JSON.stringify(userData));
 
     // Store roles with fallback to empty array

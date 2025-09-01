@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../hooks/useAuth';
 import { useLanguage } from '../../contexts/LanguageContext';
-import { 
-  FaCertificate, FaDownload, FaShare, FaEye, 
-  FaCalendar, FaUser, FaAward 
+import {
+  FaCertificate, FaDownload, FaShare, FaEye,
+  FaCalendar, FaUser, FaAward, FaClock
 } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
 import './CertificatesPage.css';
 
 const CertificatesPage = () => {

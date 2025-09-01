@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../hooks/useAuth';
 import { useLanguage } from '../../contexts/LanguageContext';
-import { FaEdit, FaCamera, FaSave, FaCancel } from 'react-icons/fa';
+import { FaEdit, FaCamera, FaSave, FaBell, FaLock, FaTimes } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
 import './ProfilePage.css';
 
 const ProfilePage = () => {
@@ -109,7 +110,7 @@ const ProfilePage = () => {
                   <FaSave /> {t('save')}
                 </button>
                 <button className="btn btn-secondary" onClick={handleCancel}>
-                  <FaCancel /> {t('cancel')}
+                  <FaTimes /> {t('cancel')}
                 </button>
               </>
             ) : (
@@ -226,7 +227,7 @@ const ProfilePage = () => {
                   <FaBell /> Notification Preferences
                 </Link>
                 <Link to="/settings/privacy" className="settings-item">
-                  <FaShield /> Privacy Settings
+                  <FaLock /> Privacy Settings
                 </Link>
                 <Link to="/settings/security" className="settings-item">
                   <FaLock /> Security

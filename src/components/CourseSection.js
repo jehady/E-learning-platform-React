@@ -1,7 +1,19 @@
 import React from 'react';
 import CourseCard from './CourseCard';
 
-const CourseSection = ({ title, courses, viewAllLink }) => {
+const SkeletonCard = () => (
+  <div className="course-card-modern skeleton">
+    <div className="course-card-img-wrap skeleton-box" />
+    <div className="course-card-info">
+      <div className="skeleton-line" style={{ width: '40%' }} />
+      <div className="skeleton-line" style={{ width: '80%' }} />
+      <div className="skeleton-line" style={{ width: '60%' }} />
+      <div className="skeleton-line" style={{ width: '30%' }} />
+    </div>
+  </div>
+);
+
+const CourseSection = ({ title, courses, viewAllLink, loading=false }) => {
   return (
     <section className="course-section-modern">
       <div className="course-section-header">
@@ -14,9 +26,11 @@ const CourseSection = ({ title, courses, viewAllLink }) => {
         </a>
       </div>
       <div className="course-cards-grid">
-        {courses.map((course) => (
-          <CourseCard key={course.id} course={course} />
-        ))}
+        {loading
+          ? Array.from({ length: 8 }).map((_, i) => <SkeletonCard key={i} />)
+          : courses.map((course) => (
+              <CourseCard key={course.id} course={course} />
+            ))}
       </div>
     </section>
   );

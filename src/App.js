@@ -23,6 +23,7 @@ import CertificatesPage from './pages/certificates/CertificatesPage';
 import TodoPage from './pages/todo/TodoPage';
 import LeaderboardPage from './pages/leaderboard/LeaderboardPage';
 import TrainerDashboard from './pages/trainer/TrainerDashboard';
+import Cart from './pages/Cart';
 import UserManagement from './pages/admin/UserManagement';
 import CategoryManagement from './pages/admin/CategoryManagement';
 import NotificationsPage from './pages/notifications/NotificationsPage';
@@ -59,6 +60,16 @@ function App() {
                 <Route path="/teacher-signup" element={<TeacherSignUp />} />
                 <Route path="/teacher-verification" element={<TeacherVerification />} />
                 <Route path="/email-verification" element={<EmailVerification />} />
+                <Route path="/Checkout" element={<Checkout />} />
+                <Route path="/WalletPage" element={<WalletPage />} />
+                <Route path="/Cart" element={<Cart />} />
+                <Route path="/TrainerDashboard" element ={<TrainerDashboard/>}/>
+                <Route path ="/SettingsPage" element ={<SettingsPage />}/>
+                <Route path="/Mycourses" element ={<MyCourses/>}/>
+                <Route path="/certificates" element ={<CertificatesPage/>}/>
+                <Route path="/to-do" element = {<TodoPage/>}/>
+                <Route path= "/AdminDashboard" element ={<AdminDashboard/>}/>
+
 
                 {/* User routes (guest, child, woman) */}
                 <Route path="/home" element={
@@ -127,9 +138,9 @@ function App() {
                   </ProtectedRoute>
                 } />
 
-                {/* Trainer routes */}
-                <Route path="/trainer/dashboard" element={
-                  <ProtectedRoute allowedRoles={['teacher']}>
+                {/* Teacher routes (rename from trainer) */}
+                <Route path="/teacher/dashboard" element={
+                  <ProtectedRoute allowedRoles={['teacher','supervisor','admin']}>
                     <TrainerDashboard />
                   </ProtectedRoute>
                 } />
@@ -155,9 +166,7 @@ function App() {
                     <StudentsPage />
                   </ProtectedRoute>
                 } />
-  );
-}
-
+                
                 {/* Admin routes */}
                 <Route path="/admin/dashboard" element={
                   <ProtectedRoute allowedRoles={['admin']}>
@@ -180,6 +189,11 @@ function App() {
                   </ProtectedRoute>
                 } />
                 <Route path="/distribute-admin" element={
+                  <ProtectedRoute allowedRoles={['admin']}>
+                    <DistributeAdmin />
+                  </ProtectedRoute>
+                } />
+                
                 {/* Shared routes */}
                 <Route path="/notifications" element={
                   <ProtectedRoute allowedRoles={['guest', 'child', 'woman', 'teacher', 'supervisor', 'admin']}>
@@ -201,7 +215,7 @@ function App() {
                     <InstructorProfile />
                   </ProtectedRoute>
                 } />
-                  <ProtectedRoute allowedRoles={['admin']}>
+                
                 {/* Legacy routes for backward compatibility */}
                 <Route path="/blog" element={
                   <ProtectedRoute allowedRoles={['guest', 'child', 'woman']}>
@@ -234,7 +248,7 @@ function App() {
         </ErrorBoundary>
       </LanguageProvider>
     </ThemeProvider>
-                    <DistributeAdmin />
-                  </ProtectedRoute>
-                } />
+  );
+}
+
 export default App;

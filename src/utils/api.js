@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'https://536f629d58c5.ngrok-free.app';
+const API_BASE_URL = 'https://4c3a9ab073d1.ngrok-free.app';
 
 // Create axios instance with default configuration
 const apiClient = axios.create({
@@ -15,7 +15,7 @@ const apiClient = axios.create({
 // Request interceptor to add auth token
 apiClient.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('token');
+    const token = sessionStorage.getItem('token') || localStorage.getItem('token');
     if (token) {
       config.headers['Authorization'] = `Bearer ${token}`;
     }

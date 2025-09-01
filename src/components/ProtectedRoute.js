@@ -11,11 +11,14 @@ import { authService } from '../services/authService';
  * @returns {React.ReactNode} Protected content or redirect
  */
 const ProtectedRoute = ({ children, allowedRoles }) => {
-  // Check if user is authenticated
   const isAuthenticated = authService.isAuthenticated();
-  
-  // If not authenticated, redirect to login
+
+  // Treat unauthenticated visitors as "guest" role for public routes
   if (!isAuthenticated) {
+    const allowsGuest = Array.isArray(allowedRoles) && allowedRoles.includes('guest');
+    if (allowsGuest) {
+      return children;
+    }
     return <Navigate to="/signin" replace />;
   }
 
@@ -24,15 +27,12 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
     return children;
   }
 
-  // Check if user has any of the allowed roles
+  // Authenticated: ensure user has one of the allowed roles
   const hasAllowedRole = authService.hasAnyRole(allowedRoles);
-  
-  // If user doesn't have required role, redirect to home
   if (!hasAllowedRole) {
     return <Navigate to="/home" replace />;
   }
 
-  // Authorized, render children
   return children;
 };
 

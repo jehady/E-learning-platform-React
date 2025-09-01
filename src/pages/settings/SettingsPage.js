@@ -3,8 +3,8 @@ import { useAuth } from '../../hooks/useAuth';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useTheme } from '../../contexts/ThemeContext';
 import { 
-  FaCog, FaUser, FaBell, FaShield, FaGlobe, 
-  FaPalette, FaKey, FaTrash, FaSave 
+  FaCog, FaUser, FaBell, FaLock, FaGlobe,
+  FaPalette, FaKey, FaTrash, FaSave
 } from 'react-icons/fa';
 import './SettingsPage.css';
 
@@ -54,7 +54,7 @@ const SettingsPage = () => {
   const settingsTabs = [
     { id: 'profile', label: 'Profile', icon: FaUser },
     { id: 'notifications', label: 'Notifications', icon: FaBell },
-    { id: 'privacy', label: 'Privacy', icon: FaShield },
+    { id: 'privacy', label: 'Privacy', icon: FaLock },
     { id: 'preferences', label: 'Preferences', icon: FaCog },
     { id: 'security', label: 'Security', icon: FaKey },
     { id: 'appearance', label: 'Appearance', icon: FaPalette }

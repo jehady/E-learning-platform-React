@@ -1,146 +1,91 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import CourseSection from '../components/CourseSection';
 import Banner from '../components/Banner';
+// import Newsletter from '../components/Newsletter';
+import Header from '../components/Header';
+import { apiService } from '../utils/api';
+import { useAuth } from '../hooks/useAuth';
+import './Home.css';
 
 const Home = () => {
-  // Sample data for recommended courses
-  const recommendedCourses = [
-    {
-      id: 1,
-      title: 'Grow Your Video Editing Skills from Experts',
-      category: 'Video',
-      tag: 'Best',
-      image: 'https://images.unsplash.com/photo-1485846234645-a62644f84728',
-      rating: 4.8,
-      ratingCount: '1024',
-      price: 39
-    },
-    {
-      id: 2,
-      title: 'Easy and Creative Food Art Ideas Decoration',
-      category: 'Photography',
-      tag: '',
-      image: 'https://images.unsplash.com/photo-1495195134817-aeb325a55b65',
-      rating: 4.6,
-      ratingCount: '1235',
-      price: 59
-    },
-    {
-      id: 3,
-      title: 'Create Your Own Sustainable Fashion Style',
-      category: 'Lifestyle',
-      tag: '',
-      image: 'https://images.unsplash.com/photo-1469334031218-e382a71b716b',
-      rating: 4.9,
-      ratingCount: '1025',
-      price: 29
-    },
-    {
-      id: 4,
-      title: 'Grow Your Skills Fashion Marketing',
-      category: 'Marketing',
-      tag: 'Hot',
-      image: 'https://images.unsplash.com/photo-1483985988355-763728e1935b',
-      rating: 4.8,
-      ratingCount: '1075',
-      price: 39
-    }
-  ];
+  const { user } = useAuth();
+  const [recommendedCourses, setRecommended] = useState([]);
+  const [popularCourses, setPopular] = useState([]);
+  const [trendingCourses, setTrending] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
-  // Sample data for popular courses
-  const popularCourses = [
-    {
-      id: 5,
-      title: 'Digital Poster Design: Best Practices',
-      category: 'Graphic Design',
-      tag: 'Best Seller',
-      image: 'https://images.unsplash.com/photo-1563089145-599997674d42',
-      rating: 4.7,
-      ratingCount: '1024',
-      price: 39
-    },
-    {
-      id: 6,
-      title: 'Create Emotional & Trendy Typography',
-      category: 'Graphic Design',
-      tag: 'Best Seller',
-      image: 'https://images.unsplash.com/photo-1561070791-2526d30994b5',
-      rating: 4.3,
-      ratingCount: '875',
-      price: 59
-    },
-    {
-      id: 7,
-      title: 'Create Vector Illustrations for Beginner',
-      category: 'Graphic Design',
-      tag: '',
-      image: 'https://images.unsplash.com/photo-1545670723-196ed0954986',
-      rating: 4.8,
-      ratingCount: '1025',
-      price: 29
-    },
-    {
-      id: 8,
-      title: 'How to Design a Creative Book Cover',
-      category: 'Graphic Design',
-      tag: 'Best Seller',
-      image: 'https://images.unsplash.com/photo-1544947950-fa07a98d237f',
-      rating: 4.5,
-      ratingCount: '1075',
-      price: 19
-    }
-  ];
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      try {
+        setLoading(true);
+        // Load categories and all courses
+        const [categories, allCourses] = await Promise.all([
+          apiService.get('/api/getAllCategory'),
+          apiService.get('/api/getAllcourses')
+        ]);
+        if (!mounted) return;
 
-  // Sample data for trending courses
-  const trendingCourses = [
-    {
-      id: 9,
-      title: 'UI Design, a User-Centered Approach',
-      category: 'UX/UI Design',
-      tag: 'Best Seller',
-      image: 'https://images.unsplash.com/photo-1581291518633-83b4ebd1d83e',
-      rating: 4.8,
-      ratingCount: '1024',
-      price: 49
-    },
-    {
-      id: 10,
-      title: 'Pick Awesome Color Palette for Your App',
-      category: 'UX/UI Design',
-      tag: 'Hot',
-      image: 'https://images.unsplash.com/photo-1609921212029-bb5a28e60960',
-      rating: 4.2,
-      ratingCount: '875',
-      price: 59
-    },
-    {
-      id: 11,
-      title: 'Principles of Great UI Design System',
-      category: 'UX/UI Design',
-      tag: '',
-      image: 'https://images.unsplash.com/photo-1581291518633-83b4ebd1d83e',
-      rating: 4.9,
-      ratingCount: '1025',
-      price: 99
-    },
-    {
-      id: 12,
-      title: 'Prototype Your First Mobile Application',
-      category: 'UX/UI Design',
-      tag: 'Hot',
-      image: 'https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c',
-      rating: 4.3,
-      ratingCount: '1075',
-      price: 39
-    }
-  ];
+        // Map categories by id for quick lookup
+        const categoryById = new Map((categories || []).map(c => [c.id, c.category_name]));
+
+        // Map API course to UI card shape
+        const mapCourse = (c) => ({
+          id: c.id,
+          title: c.course_name,
+          category: categoryById.get(c.category_id) || 'Other',
+          image: typeof c.poster === 'string' && c.poster.startsWith('http') ? c.poster : `https://picsum.photos/seed/${c.id}/480/320`,
+          rating: c.rating ?? 0,
+          ratingCount: c.rating ? Math.max(1, Math.round(c.rating * 200)) : 0,
+          price: c.is_paid ? c.price : 0,
+          tag: c.status === 'published' ? '' : 'Draft'
+        });
+
+        const courses = (allCourses || []).map(mapCourse);
+
+        // Build UI arrays while keeping the original section headings
+        const interests = Array.isArray(user?.interests) ? user.interests : [];
+        const isInterest = (c) => interests.includes(c.category);
+
+        const recommended = (interests.length ? courses.filter(isInterest) : courses)
+          .sort((a,b) => (b.rating||0) - (a.rating||0))
+          .slice(0, 8);
+
+        const popular = [...courses]
+          .sort((a,b) => (b.rating||0) - (a.rating||0))
+          .slice(0, 8);
+
+        const trending = [...courses]
+          .sort((a,b) => {
+            const ad = new Date(a.updated_at || a.start_date || 0).getTime();
+            const bd = new Date(b.updated_at || b.start_date || 0).getTime();
+            return bd - ad;
+          })
+          .slice(0, 8);
+
+        setRecommended(recommended);
+        setPopular(popular);
+        setTrending(trending);
+      } catch (e) {
+        if (!mounted) return;
+        setError(e.message || 'Failed to load courses');
+      } finally {
+        if (mounted) setLoading(false);
+      }
+    })();
+    return () => { mounted = false; };
+  }, [user]);
+
+  // Keep the layout visible; sections will render skeletons when loading=true
 
   return (
     <div className="page">
-      
+      <Header />
       <CourseSection 
         title="Recommended for you" 
         courses={recommendedCourses} 
+        loading={loading}
         viewAllLink="/courses/recommended" 
       />
       
@@ -149,14 +94,18 @@ const Home = () => {
       <CourseSection 
         title="Popular courses" 
         courses={popularCourses} 
+        loading={loading}
         viewAllLink="/courses/popular" 
       />
       
       <CourseSection 
         title="Trending courses" 
         courses={trendingCourses} 
+        loading={loading}
         viewAllLink="/courses/trending" 
       />
+      {/* <Newsletter /> */}
+      {error && <div role="alert" style={{ marginTop: 12 }}>{error}</div>}
     </div>
   );
 };
