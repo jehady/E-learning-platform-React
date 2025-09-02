@@ -9,7 +9,7 @@ import CourseSection from './CourseSection';
  * @param {Array} props.relatedCourses - Array of related courses
  * @returns {JSX.Element} Course tabs component
  */
-const CourseTabs = ({ relatedCourses = [] }) => {
+const CourseTabs = ({ relatedCourses = [], description = '', requirements = [] }) => {
   const [activeTab, setActiveTab] = useState('description');
 
   // Sample data for reviews
@@ -29,11 +29,11 @@ const CourseTabs = ({ relatedCourses = [] }) => {
         >
           Class description
         </button>
-        <button 
-          className={activeTab === 'benefits' ? 'active' : ''} 
-          onClick={() => setActiveTab('benefits')}
+        <button
+          className={activeTab === 'requirements' ? 'active' : ''}
+          onClick={() => setActiveTab('requirements')}
         >
-          Benefits
+          Requirements
         </button>
         <button 
           className={activeTab === 'reviews' ? 'active' : ''} 
@@ -53,21 +53,21 @@ const CourseTabs = ({ relatedCourses = [] }) => {
         {activeTab === 'description' && (
           <div className="cd-description">
             <h3>Class description</h3>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem lorem aliquam sed lacinia quis. Nibh dictumst vulputate odio pellentesque ut quis ac, sit ipsum. Sit rhoncus velit in sed massa arcu sit eu. Vitae et vitae eget lorem non dui. Sollicitudin ut in adipiscing dui.</p>
-            <p>Convallis in semper laoreet nibh leo. Vivamus malesuada ipsum pulvinar non rutrum risus dui, risus. Purus massa velit iaculis tincidunt tortor, risus scelerisque risus. In at lorem pellentesque orci ac enim dictum dignissim in. Aenean pulvinar dictum ullamcorper. Vel tor, tortor massa metus purus metus. Maecenas mollis in velit auctor cursus scelerisque eget. Nibh faucibus purus elementum ultrices elementum, urna.</p>
+            <p>{description || 'No description available.'}</p>
           </div>
         )}
         
-        {activeTab === 'benefits' && (
-          <div className="cd-benefits">
-            <ul className="cd-benefit-list">
-              <li>14 hours on-demand video</li>
-              <li>Full lifetime access</li>
-              <li>Native teacher</li>
-              <li>Certificate of complete</li>
-              <li>100% free document</li>
-              <li>24/7 support</li>
-            </ul>
+        {activeTab === 'requirements' && (
+          <div className="cd-requirements">
+            {requirements && requirements.length > 0 ? (
+              <ul className="cd-requirement-list">
+                {requirements.map((req, index) => (
+                  <li key={index}>{req}</li>
+                ))}
+              </ul>
+            ) : (
+              <p>NO REQ IS NEEDED</p>
+            )}
           </div>
         )}
         

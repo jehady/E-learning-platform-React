@@ -1,10 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react'; 
 import { Link, useParams } from 'react-router-dom';
-// import CourseGallery from '../components/CourseGallery';
 import CourseTabs from '../components/CourseTabs';
 import InstructorCard from '../components/InstructorCard';
 import CourseInfoBox from '../components/CourseInfoBox';
-import StripePaymentModal from '../components/StripePaymentModal';
 import { apiService } from '../utils/api';
 import './CourseDetails.css';
 
@@ -53,7 +51,6 @@ const relatedCourses = [
 
 const CourseDetails = () => {
   const { id } = useParams();
-  const [showStripe, setShowStripe] = useState(false);
   const [loading, setLoading] = useState(true);
   const [course, setCourse] = useState(null);
   const [categoryName, setCategoryName] = useState('');
@@ -61,16 +58,23 @@ const CourseDetails = () => {
   const [videos, setVideos] = useState([]);
   const [selectedVideo, setSelectedVideo] = useState(null);
   const [visibleCount, setVisibleCount] = useState(1);
+  const [showPaymentForm, setShowPaymentForm] = useState(false);
+  const [point, setPoint] = useState('');
+  const [promoCode, setPromoCode] = useState('');
+  const [paymentSuccess, setPaymentSuccess] = useState(null);
+  const [paymentError, setPaymentError] = useState(null);
+  const [paymentSuccessLoading, setPaymentSuccessLoading] = useState(false);
 
-  // Fetch course details + category name
+  // Fetch course details + check Stripe success
   useEffect(() => {
     let mounted = true;
+
     (async () => {
       try {
         setLoading(true);
+
         const [detailPayload, categories] = await Promise.all([
           apiService.get(`/api/getCourseDetails/${id}`),
-          // cache categories in localStorage; fetch only if not cached
           (async () => {
             const cached = localStorage.getItem('categoriesCache');
             if (cached) return JSON.parse(cached);
@@ -79,42 +83,116 @@ const CourseDetails = () => {
             return list;
           })()
         ]);
+
         if (!mounted) return;
-        const details = detailPayload?.course_details || detailPayload;
-        setCourse(details);
-        const teacherObj = detailPayload?.["teacher name"]; // API key with space
+
+        const courseData = detailPayload?.course_details || detailPayload;
+        setCourse(courseData);
+
+        const teacherObj = detailPayload?.["teacher name"];
         if (teacherObj && teacherObj.username) {
           setTeacherName(teacherObj.username);
         }
+
         const vids = Array.isArray(detailPayload?.videos) ? detailPayload.videos : [];
         setVideos(vids);
         setSelectedVideo(vids[0] || null);
-        const cat = (categories || []).find(c => c.id === details?.category_id);
-        setCategoryName(cat?.category_name || details?.category_name || '');
+
+        // ✅ Check Stripe redirect for session_id
+        const sessionId = new URLSearchParams(window.location.search).get("session_id");
+        if (sessionId) {
+          const verifyPayment = async () => {
+            try {
+              setPaymentSuccessLoading(true);
+
+              // Call your backend API to verify payment
+              const response = await apiService.get(`/api/payment/success?session_id=${sessionId}`);
+
+              if (!mounted) return;
+
+              if (response?.status === 200 || response?.success) {
+                setPaymentSuccess(response);
+              } else {
+                setPaymentError("Payment verification failed. Please try again.");
+                alert("Payment verification failed.");
+              }
+
+              // Clean URL
+              window.history.replaceState({}, document.title, window.location.pathname);
+            } catch (err) {
+              console.error("Error verifying Stripe session:", err);
+              setPaymentError("Error verifying payment.");
+              alert("An error occurred while verifying your payment.");
+            } finally {
+              if (mounted) setPaymentSuccessLoading(false);
+            }
+          };
+
+          verifyPayment();
+        }
+
+        const cat = (categories || []).find(c => c.id === courseData?.category_id);
+        setCategoryName(cat?.category_name || courseData?.category_name || '');
       } catch (e) {
+        console.error('Error fetching course details:', e);
         if (!mounted) return;
         setCourse(null);
       } finally {
         if (mounted) setLoading(false);
       }
     })();
+
     return () => { mounted = false; };
   }, [id]);
 
-  // Handler for following instructor
-  const handleFollowInstructor = () => {
-    // In a real implementation, this would make an API call
-    alert('Following instructor! (API call would go here)');
+  // Buy with points
+  const handleProcessPayment1 = async () => {
+    try {
+      const response = await apiService.post('/api/payment', {
+        course_id: id,
+        payment_method: 'points',
+        promo_code: promoCode || undefined,
+        point: point || undefined
+      });
+
+      if (response.status === 200) {
+        alert('Payment successful.');
+      } else {
+        alert(response.message);
+      }
+    } catch (error) {
+      console.error('Error processing payment:', error);
+      alert('An error occurred while processing your payment. Please try again.');
+    }
   };
 
-  // Handler for buying course
+  // Buy with Stripe
+  const handleProcessPayment = async () => {
+    try {
+      const response = await apiService.post('/api/payment', {
+        course_id: id,
+        payment_method: 'stripe',
+        promo_code: promoCode || undefined,
+        point: point || undefined
+      });
+
+      if (response?.checkout_url) {
+        window.location.href = response.checkout_url;
+      } else {
+        console.error('Invalid response from payment API:', response);
+        alert('An error occurred while processing your payment. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error processing payment:', error);
+      alert('An error occurred while processing your payment. Please try again.');
+    }
+  };
+
   const handleBuyCourse = () => {
-    setShowStripe(true);
+    setShowPaymentForm(true);
   };
 
-  // Handler for adding to cart
   const handleAddToCart = () => {
-    // In a real implementation, this would make an API call
     alert('Added to cart! (API call would go here)');
   };
 
@@ -124,7 +202,7 @@ const CourseDetails = () => {
 
   const title = course?.course_name || '...';
   const rating = course?.rating || 0;
-  const price = course?.is_paid ? (course?.price || 0) : 0;
+  const price = course?.price || 0;
 
   const Skeleton = () => (
     <div className="cd-skeleton">
@@ -202,7 +280,63 @@ const CourseDetails = () => {
                   </div>
                 )}
 
-                <CourseTabs relatedCourses={relatedCourses} />
+                <CourseTabs
+                  relatedCourses={relatedCourses}
+                  description={course?.description || ''}
+                  requirements={course?.requirements || []}
+                />
+
+                {/* ✅ Payment Messages */}
+                {paymentSuccess && (
+                  <div className="cd-payment-success">
+                    <h3>✅ Payment Successful!</h3>
+                    <p>Your session ID: {paymentSuccess.session_id}</p>
+                  </div>
+                )}
+                {paymentError && (
+                  <div className="cd-payment-error">
+                    <h3>❌ Payment Failed</h3>
+                    <p>{paymentError}</p>
+                  </div>
+                )}
+                
+                {/* Payment Form */}
+                {showPaymentForm && (
+                  <div className="cd-payment-form">
+                    <h3>Payment Information</h3>
+                    
+                    <div className="cd-form-group">
+                      <label htmlFor="promoCode">Promo Code (Optional)</label>
+                      <input
+                        type="text"
+                        id="promoCode"
+                        value={promoCode}
+                        onChange={(e) => setPromoCode(e.target.value)}
+                        className="cd-form-input"
+                      />
+                    </div>
+                    <div className="cd-form-actions">
+                      <button
+                        className="cd-course-buy"
+                        onClick={handleProcessPayment1}
+                      >
+                        Buy With Point
+                      </button>
+                      <button
+                        className="cd-course-buy"
+                        onClick={handleProcessPayment}
+                      >
+                        Buy With Stripe
+                      </button>
+                      <button
+                        className="cd-course-cart"
+                        onClick={() => setShowPaymentForm(false)}
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
               
               <aside className="cd-sidebar">
@@ -210,7 +344,7 @@ const CourseDetails = () => {
                   avatar="https://randomuser.me/api/portraits/women/44.jpg"
                   name={teacherName || 'Instructor'}
                   role="Top teacher"
-                  onFollow={handleFollowInstructor}
+                  onFollow={() => {}}
                 />
                 <CourseInfoBox
                   title={title}
@@ -226,11 +360,6 @@ const CourseDetails = () => {
           </>
         )}
       </main>
-      <StripePaymentModal
-        open={showStripe}
-        onClose={() => setShowStripe(false)}
-        price={price}
-      />
     </div>
   );
 };

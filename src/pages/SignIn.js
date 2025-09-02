@@ -38,7 +38,7 @@ const SignIn = () => {
       } else if (roles.includes('supervisor')) {
         navigate('/subadmin');
       } else if (roles.includes('teacher')) {
-        navigate('/my-teaching-profile');
+        navigate('/home');
       } else {
         navigate('/home');
       }

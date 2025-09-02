@@ -32,8 +32,14 @@ const Header = () => {
           >
             Home
           </Link>
+          <Link 
+            to="/courses" 
+            className={`px-3 py-2 text-[15px] font-medium rounded-md transition-colors hover:bg-gray-100 hover:text-primary-500 ${isActive('/courses') ? 'text-primary-500 font-semibold' : 'text-gray-600'}`}
+          >
+            Courses
+          </Link>
           
-          {isAuthenticated && (
+          {isAuthenticated || (roles.includes('child') || roles.includes('woman')) && (
             <>
               <Link 
                 to="/my-courses" 
@@ -52,17 +58,17 @@ const Header = () => {
           )}
           
           <Link 
-            to="/promotions" 
+            to="/my-courses" 
             className={`px-3 py-2 text-[15px] font-medium rounded-md transition-colors hover:bg-gray-100 hover:text-primary-500 ${isActive('/promotions') ? 'text-primary-500 font-semibold' : 'text-gray-600'}`}
           >
-            Promotions
+            MyCourses
           </Link>
           
           <Link 
-            to="/support" 
+            to="/Profile" 
             className={`px-3 py-2 text-[15px] font-medium rounded-md transition-colors hover:bg-gray-100 hover:text-primary-500 ${isActive('/support') ? 'text-primary-500 font-semibold' : 'text-gray-600'}`}
           >
-            Support
+            Profile
           </Link>
           
           {/* Role-based links */}
@@ -127,7 +133,6 @@ const Header = () => {
               />
             </Link>
           ) : (
-            // Only show sign in/sign up buttons on landing page
             isLandingPage && (
               <div className="flex items-center gap-3">
                 <Link 
