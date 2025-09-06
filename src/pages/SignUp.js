@@ -1,180 +1,248 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { auth, googleProvider } from '../firebase'; // Assuming firebase.js is in the parent directory
-import { signInWithPopup, createUserWithEmailAndPassword } from 'firebase/auth';
-import axios from 'axios';
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { API_BASE_URL, apiService } from "../utils/api";
+import "./SignIn.css";
 
 const SignUp = () => {
-  const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [passwordConfirmation, setPasswordConfirmation] = useState('');
-  const [error, setError] = useState(null);
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [passwordConfirmation, setPasswordConfirmation] = useState("");
+  const [userType, setUserType] = useState("");
+  const [teacherFiles, setTeacherFiles] = useState([]); // ✅ store uploaded PDFs
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const [userType, setUserType] = useState(''); // State for user type
 
   const navigate = useNavigate();
 
   const handleSignUp = async (e) => {
-  e.preventDefault();
-  setLoading(true);
-  setError(null);
+    e.preventDefault();
+    setLoading(true);
+    setError("");
 
-  if (password !== passwordConfirmation) {
-    setError('Passwords do not match.');
-    setLoading(false);
-    return;
-  }
-
-  try {
-    // Create FormData
-    const formData = new FormData();
-    formData.append('username', username);
-    formData.append('email', email);
-    formData.append('password', password);
-    formData.append('password_confirmation', passwordConfirmation);
-    formData.append('user_type', 'oman');
-
-    // Make Axios POST request
-    const response = await axios.post('https://c260b3cab0b6.ngrok-free.app/api/sign_up', formData, {
-      headers: {
-        'Accept': 'application/json',
-        'ngrok-skip-browser-warning': '1',
-      },
-    });
-    console.log(response.data);
-
-    // Check response content type
-    const contentType = response.headers['content-type'];
-    let responseData;
-    if (contentType && contentType.includes('application/json')) {
-      responseData = response.data; // Axios automatically parses JSON
-    } else {
-      // Handle non-JSON responses if necessary
-      responseData = response.data;
-      console.error('Received non-JSON response:', responseData);
-      throw new Error(`Server responded with non-JSON content. Status: ${response.status}. Response: ${responseData.substring(0, 200)}...`);
+    if (password !== passwordConfirmation) {
+      setError("Passwords do not match.");
+      setLoading(false);
+      return;
     }
 
-    // Success handling
-    console.log('Sign up successful:', responseData);
-    navigate('/my-courses'); // Redirect on success
-
-  } catch (err) {
-    setError(err.message);
-    console.error('Sign up error:', err);
-  } finally {
-    setLoading(false);
-  }
-};
-
-  const handleGoogleSignUp = async () => {
     try {
-      setLoading(true);
-      setError(null);
-      await signInWithPopup(auth, googleProvider);
-      navigate('/my-courses');
+      let res;
+
+      if (userType === "teacher") {
+        // ✅ build FormData for teacher
+        const formData = new FormData();
+        formData.append("username", username);
+        formData.append("email", email);
+        formData.append("password", password);
+        formData.append("password_confirmation", passwordConfirmation);
+        formData.append("user_type", userType);
+
+        teacherFiles.forEach((file) => {
+          formData.append("file_path[]", file); // multiple files support
+        });
+
+        res = await apiService.post("/api/sign_up", formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+      } else {
+        
+        const data = {
+          username,
+          email,
+          password,
+          password_confirmation: passwordConfirmation,
+          user_type: userType,
+        };
+        res = await apiService.post("/api/sign_up", data);
+      }
+      console.log(res.is_approved);
+
+
+  // Save token & user
+  localStorage.setItem("token", res.token);
+  localStorage.setItem("user", JSON.stringify(res));
+
+  if (res.is_approved === 1) {
+    // ✅ Already approved → go to interests
+    alert("Signup successful! Welcome 🎉");
+    navigate("/my-Interset");
+  } else {
+    // ⏳ Pending admin approval
+    alert(res.message || "Your account is pending admin approval.");
+    // you can still redirect them somewhere, or keep them on the signup page
+  }
+
     } catch (err) {
-      setError(err.message);
-      console.error('Google sign-up error:', err);
+      console.error("Signup error:", err);
+      setError(err.message || "Something went wrong. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
+  const handleGoogleSignUp = () => {
+    window.location.href = `${API_BASE_URL}/google/redirect`;
+  };
+
   return (
-    <div className="auth-container">
-      <div className="auth-form">
-        <h2>Create Account</h2>
-        {error && <p className="error-message">{error}</p>}
-        <form onSubmit={handleSignUp}>
-          <div className="form-group">
-            <label htmlFor="username">Username:</label>
+    <div className="auth-page">
+      <div className="auth-container-modern">
+        <div className="auth-header">
+          <h1 className="auth-title">Create Your Account</h1>
+          <p className="auth-subtitle">Join us and start your learning journey</p>
+        </div>
+
+        {error && <div className="auth-error">{error}</div>}
+
+        <form onSubmit={handleSignUp} className="auth-form">
+          {/* Username */}
+          <div className="input-group">
+            <label htmlFor="username">Username</label>
             <input
               type="text"
               id="username"
+              placeholder="Enter your username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               required
+              disabled={loading}
             />
           </div>
-          <div className="form-group">
-            <label htmlFor="email">Email:</label>
+
+          {/* Email */}
+          <div className="input-group">
+            <label htmlFor="email">Email</label>
             <input
               type="email"
               id="email"
+              placeholder="Enter your email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
+              disabled={loading}
             />
           </div>
-          <div className="form-group">
-            <label htmlFor="password">Password:</label>
+
+          {/* Password */}
+          <div className="input-group">
+            <label htmlFor="password">Password</label>
             <input
               type="password"
               id="password"
+              placeholder="Enter your password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
+              disabled={loading}
             />
           </div>
-          <div className="form-group">
-            <label htmlFor="passwordConfirmation">Confirm Password:</label>
+
+          {/* Confirm Password */}
+          <div className="input-group">
+            <label htmlFor="passwordConfirmation">Confirm Password</label>
             <input
               type="password"
               id="passwordConfirmation"
+              placeholder="Re-enter your password"
               value={passwordConfirmation}
               onChange={(e) => setPasswordConfirmation(e.target.value)}
               required
+              disabled={loading}
             />
           </div>
 
-          <div className="form-group">
-            <label htmlFor="userType">User Type:</label>
-            <div className="radio-group">
-              <input
-                type="radio"
-                id="women"
-                name="userType"
-                value="women"
-                checked={userType === 'women'}
-                onChange={(e) => setUserType(e.target.value)}
-                required
-              />
-              <label htmlFor="women">Women</label>
-
-              <input
-                type="radio"
-                id="child"
-                name="userType"
-                value="child"
-                checked={userType === 'child'}
-                onChange={(e) => setUserType(e.target.value)}
-                required
-              />
-              <label htmlFor="child">Child</label>
+          {/* User Type */}
+          <div className="input-group">
+            <label>User Type</label>
+            <div className="radio-group-modern">
+              <label>
+                <input
+                  type="radio"
+                  name="userType"
+                  value="teacher"
+                  checked={userType === "teacher"}
+                  onChange={(e) => setUserType(e.target.value)}
+                  required
+                />
+                Teacher
+              </label>
+              <label>
+                <input
+                  type="radio"
+                  name="userType"
+                  value="woman"
+                  checked={userType === "woman"}
+                  onChange={(e) => setUserType(e.target.value)}
+                  required
+                />
+                Woman
+              </label>
+              <label>
+                <input
+                  type="radio"
+                  name="userType"
+                  value="child"
+                  checked={userType === "child"}
+                  onChange={(e) => setUserType(e.target.value)}
+                  required
+                />
+                Child
+              </label>
             </div>
           </div>
 
-          <button type="submit" className="btn btn-primary" disabled={loading}>
-            {loading ? 'Creating Account...' : 'Create Account'}
+          {/* Teacher File Upload (only if teacher selected) */}
+          {userType === "teacher" && (
+            <div className="input-group">
+              <label htmlFor="teacherFiles">Upload Certificates (PDF)</label>
+              <input
+                type="file"
+                id="teacherFiles"
+                accept="application/pdf"
+                multiple
+                onChange={(e) => setTeacherFiles(Array.from(e.target.files))}
+                disabled={loading}
+              />
+              <small>You can upload one or more PDF files.</small>
+            </div>
+          )}
+
+          {/* Submit Button */}
+          <button type="submit" className="auth-primary-btn" disabled={loading}>
+            {loading ? "Creating Account..." : "Sign Up"}
           </button>
         </form>
 
-        <div className="social-login">
-          <p>Or continue with</p>
-          <button onClick={handleGoogleSignUp} className="btn btn-google">
-            <img src="/images/google-icon.png" alt="Google" />
-            Continue with Google
-          </button>
+        <div className="auth-divider">
+          <span>or</span>
         </div>
 
-        <div className="login-links">
+        {/* Google Sign Up Button */}
+        <button
+          onClick={handleGoogleSignUp}
+          className="auth-google-btn"
+          disabled={loading}
+        >
+          <img
+            src="https://developers.google.com/identity/images/g-logo.png"
+            alt="Google logo"
+            style={{ width: 20, height: 20, marginRight: 8 }}
+          />
+          Sign Up with Google
+        </button>
+
+        <div className="auth-footer">
           <p>
-            Already have an account? <Link to="/signin">Sign In</Link>
+            Already have an account?{" "}
+            <Link to="/signin" className="auth-link">
+              Sign In
+            </Link>
           </p>
           <p>
-            <Link to="/reset-password">Forgot Password?</Link>
+            <Link to="/reset-password" className="auth-link">
+              Forgot Password?
+            </Link>
           </p>
         </div>
       </div>

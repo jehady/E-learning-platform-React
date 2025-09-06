@@ -9,7 +9,7 @@ import CourseDetails from './pages/CourseDetails';
 import MyCourses from './pages/MyCourses';
 import InstructorProfile from './pages/InstructorProfile';
 import Landing from './pages/Landing';
-import SignUpModern from './pages/SignUpModern';
+import SignUp from './pages/SignUp';
 import SignIn from './pages/SignIn';
 import ResetPassword from './pages/ResetPassword';
 import TeacherSignUp from './pages/TeacherSignUp';
@@ -17,7 +17,7 @@ import TeacherVerification from './pages/TeacherVerification';
 import CourseDiscussion from './pages/CourseDiscussion';
 import Checkout from './pages/Checkout';
 import CourseBrowser from './pages/courses/CourseBrowser';
-import ProfilePage from './pages/profile/ProfilePage';
+
 import WalletPage from './pages/wallet/WalletPage';
 import CertificatesPage from './pages/certificates/CertificatesPage';
 import TodoPage from './pages/todo/TodoPage';
@@ -43,6 +43,21 @@ import StudentsPage from './pages/subadmin/StudentsPage';
 import Promotions from './pages/Promotions';
 import Support from './pages/Support';
 import './index.css';
+import UserProfile from './pages/UserProfile';
+import CreateCoursePage from './pages/CreateCoursePage';
+import AddVideosPage from './pages/AddVideosPage';
+import EditProfilePage from './pages/EditProfilePage';
+import PendingCoursesPage from './pages/subadmin/PendingCoursesPage';
+import EditCoursePage from './pages/EditCoursePage';
+import ExamPage from './pages/ExamPage';
+import CreateQuestionPage from './pages/CreateQuestionPage';
+import ExamEditPage from './pages/ExamEditPge';
+import Supervisorpage from './pages/admin/SupervisorPage';
+import ExamPageStudent from './pages/ExamPageStudent';
+import TeacherMangment from './pages/admin/TeacherMangment';
+import FAQManagement from './pages/admin/FAQManagement';
+import CategoryPage from './pages/CategoryPage.js';
+import FAQPage from './pages/newsSettler/FAQPage.js';
 
 function App() {
   return (
@@ -54,7 +69,7 @@ function App() {
               <Routes>
                 {/* Public routes */}
                 <Route path="/" element={<Landing />} />
-                <Route path="/signup" element={<SignUpModern />} />
+                <Route path="/signup" element={<SignUp />} />
                 <Route path="/signin" element={<SignIn />} />
                 <Route path="/reset-password" element={<ResetPassword />} />
                 <Route path="/teacher-signup" element={<TeacherSignUp />} />
@@ -69,7 +84,37 @@ function App() {
                 <Route path="/certificates" element ={<CertificatesPage/>}/>
                 <Route path="/to-do" element = {<TodoPage/>}/>
                 <Route path= "/AdminDashboard" element ={<AdminDashboard/>}/>
+                <Route path="/discussion/:id" element={<CourseDiscussion />} />
+                <Route path="/UserProfile" element={<UserProfile />} />
+                <Route path="/instructor-profile" element={<InstructorProfile />} />
+                <Route path="/CreateCourse" element={<CreateCoursePage />} />
+               <Route path="/add-videos/:courseId" element={<AddVideosPage />} />
+               <Route path="/add-exam/:courseId" element={<ExamPage />} />
+               <Route path="/create-question/:examId" element={<CreateQuestionPage />} />
+               <Route path="/Edit-Exam/:id" element={<ExamEditPage />} />
+               <Route path="/exam/:courseId" element={<ExamPageStudent />} />
+               <Route path="/FAQPage" element ={<FAQPage/>}/>
 
+
+               <Route path="/EditProfilePage" element={<EditProfilePage />} />
+               <Route path="/SubAdminPage" element={<SubAdminPage />} />
+               <Route path="/AdminDashboard" element={<AdminDashboard />} />
+                <Route path="/Supervisorpage" element={<Supervisorpage />} />
+                <Route path="/PendingCoursesPage" element={<PendingCoursesPage />} />
+                <Route path="/EditCoursePage/:courseId" element={<EditCoursePage/>} />
+                <Route path="/SubAdminPage/StudentsPage" element={<StudentsPage/>} />
+                <Route path="/SubAdminPage/TeachersPage" element={<TeachersPage/>} />
+                <Route path="/AdminDashboard/TeacherMangment" element={<TeacherMangment/>} />
+                <Route path="/AdminDashboard/CategoryManagement" element={<CategoryManagement/>} />
+                <Route path="/AdminDashboard/FAQManagement" element={<FAQManagement/>} />
+                <Route path="/my-Interset" element={<CategoryPage/>} />
+
+
+
+
+                
+
+                
 
                 {/* User routes (guest, child, woman) */}
                 <Route path="/home" element={
@@ -87,6 +132,7 @@ function App() {
                     <CourseDetails />
                   </ProtectedRoute>
                 } />
+
                 <Route path="/course/:id/discussion" element={
                   <ProtectedRoute allowedRoles={['guest', 'child', 'woman']}>
                     <CourseDiscussion />
@@ -97,11 +143,7 @@ function App() {
                     <MyCourses />
                   </ProtectedRoute>
                 } />
-                <Route path="/profile" element={
-                  <ProtectedRoute allowedRoles={['guest', 'child', 'woman', 'teacher', 'supervisor', 'admin']}>
-                    <ProfilePage />
-                  </ProtectedRoute>
-                } />
+                
                 <Route path="/wallet" element={
                   <ProtectedRoute allowedRoles={['guest', 'child', 'woman']}>
                     <WalletPage />
@@ -173,9 +215,9 @@ function App() {
                     <AdminDashboard />
                   </ProtectedRoute>
                 } />
-                <Route path="/admin/users" element={
+                <Route path="/AdminDashboard/FAQManagement" element={
                   <ProtectedRoute allowedRoles={['admin']}>
-                    <UserManagement />
+                    <FAQManagement />
                   </ProtectedRoute>
                 } />
                 <Route path="/admin/categories" element={

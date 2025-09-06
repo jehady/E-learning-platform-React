@@ -1,13 +1,28 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 const CourseCard = ({ course }) => {
+  const location = useLocation();
+
+  // Decide where to go based on current page
+  const isMyCoursesPage = location.pathname.startsWith('/my-courses');
+  const linkTo = isMyCoursesPage
+    ? `/discussion/${course.id}`   // enrolled → CourseDiscussion
+    : `/course/${course.id}`;      // general → CourseDetails
+
   return (
-    <Link to={`/course/${course.id}`} className="course-card-modern">
+    <Link to={linkTo} className="course-card-modern">
       <div className="course-card-img-wrap">
-        <img src={course.image} alt={course.title} className="course-card-img" loading="lazy" />
+        <img
+          src={course.image}
+          alt={course.title}
+          className="course-card-img"
+          loading="lazy"
+        />
         {course.tag && (
-          <span className={`course-card-tag tag-${course.tag.toLowerCase()}`}>{course.tag}</span>
+          <span className={`course-card-tag tag-${course.tag.toLowerCase()}`}>
+            {course.tag}
+          </span>
         )}
       </div>
       <div className="course-card-info">

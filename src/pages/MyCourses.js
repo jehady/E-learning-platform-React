@@ -7,8 +7,6 @@ import './MyCourses.css';
 const BATCH_SIZE = 6; // how many to reveal per click
 
 const MyCourses = () => {
-  // 🔒 Only store the minimal fields you asked for
-  // { id, title, price, teacher, rate }
   const [all, setAll] = useState([]);
   const [visibleCount, setVisibleCount] = useState(BATCH_SIZE);
   const [loading, setLoading] = useState(true);
@@ -24,9 +22,6 @@ const MyCourses = () => {
 
         // Fetch
         const payload = await apiService.get('/api/getMy-courses');
-
-        // The endpoint returns: { data: [...], message, code }
-        // But we’ll guard against any client wrapper shape.
         const rawCourses = Array.isArray(payload?.data)
           ? payload.data
           : Array.isArray(payload)
@@ -35,12 +30,10 @@ const MyCourses = () => {
               ? payload.data.data
               : [];
 
-        // Minimal shape only (id, title, price, teacher, rate)
         const compact = rawCourses.map((c) => ({
           id: c?.id,
           title: c?.course_name ?? 'Untitled',
           price: c?.is_paid ? Number(c?.price ?? 0) : 0,
-          // No teacher name in the payload → fallback derived from user_id
           teacher:
             c?.instructor_name ||
             c?.teacher_name ||
@@ -117,7 +110,6 @@ const MyCourses = () => {
             onClick={loadMore}
             className="px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition"
           >
-            Load More
           </button>
         </div>
       )}

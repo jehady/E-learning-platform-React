@@ -8,58 +8,7 @@ const BanUserModal = ({ isOpen, onClose, user, userType, onBanSuccess }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const handleBanUser = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setError('');
-
-    if (!reason.trim()) {
-      setError('Please provide a reason for banning this user.');
-      setLoading(false);
-      return;
-    }
-
-    if (!expiryDate) {
-      setError('Please select an expiry date for the ban.');
-      setLoading(false);
-      return;
-    }
-
-    try {
-      const token = localStorage.getItem('token');
-      const response = await axios.post(
-        `https://74cda276e7e3.ngrok-free.app/api/ban_user?user_id=${user.id}`,
-        {
-          reason: reason,
-          expiry_date: expiryDate
-        },
-        {
-          headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`,
-            'ngrok-skip-browser-warning': '1'
-          }
-        }
-      );
-
-      console.log('User banned successfully:', response.data);
-      onBanSuccess();
-      onClose();
-    } catch (err) {
-      if (err.response) {
-        setError(err.response.data.message || 'Failed to ban user. Please try again.');
-      } else if (err.request) {
-        setError('Network Error: Could not connect to the server. Please try again later.');
-      } else {
-        setError('An unexpected error occurred. Please try again.');
-      }
-      console.error('Ban User Error:', err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
+ 
   if (!isOpen) return null;
 
   return (
@@ -179,7 +128,19 @@ const BanUserModal = ({ isOpen, onClose, user, userType, onBanSuccess }) => {
         </div>
 
         {/* Form */}
-        <form onSubmit={handleBanUser}>
+        
+          <form
+  onSubmit={(e) => {
+    e.preventDefault(); // prevent page reload
+    if (!reason || !expiryDate) {
+      setError("Please provide a reason and expiry date");
+      return;
+    }
+    setError("");
+    onBanSuccess(reason, expiryDate); // call parent handler
+  }}
+>
+
           {error && (
             <div style={{
               background: '#ffe6e6',
@@ -280,7 +241,7 @@ const BanUserModal = ({ isOpen, onClose, user, userType, onBanSuccess }) => {
             >
               Cancel
             </button>
-            <button
+            <button 
               type="submit"
               disabled={loading}
               style={{

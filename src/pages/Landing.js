@@ -5,12 +5,7 @@ import './Landing.css';
 const Landing = () => {
   return (
     <div className="landing-hero-v2">
-      <div className="landing-overlay" />
-   
-        
-     
-       
-     
+      <div className="landing-overlay" /> 
       <main className="landing-main">
         <div className="landing-content">
           <h1 className="landing-hero-title">"[Platform Name]":</h1>

@@ -24,22 +24,22 @@ const Header = () => {
           <span className="text-xl font-bold text-gray-900 ml-2">Logo</span>
         </div>
         
-        {/* Navigation */}
+       
         <nav className={`flex items-center gap-6 md:flex ${isMobileMenuOpen ? 'flex' : 'hidden'} md:relative absolute md:top-auto top-[70px] md:left-auto left-0 md:right-auto right-0 md:flex-row flex-col md:bg-transparent bg-white md:p-0 p-4 md:shadow-none shadow-md z-40`}>
           <Link 
-            to="/" 
+            to="/home" 
             className={`px-3 py-2 text-[15px] font-medium rounded-md transition-colors hover:bg-gray-100 hover:text-primary-500 ${isActive('/') ? 'text-primary-500 font-semibold' : 'text-gray-600'}`}
           >
             Home
           </Link>
           <Link 
-            to="/courses" 
+            to="/Watch lATER" 
             className={`px-3 py-2 text-[15px] font-medium rounded-md transition-colors hover:bg-gray-100 hover:text-primary-500 ${isActive('/courses') ? 'text-primary-500 font-semibold' : 'text-gray-600'}`}
           >
             Courses
           </Link>
           
-          {isAuthenticated || (roles.includes('child') || roles.includes('woman')) && (
+          {isAuthenticated && (roles.includes('child') || roles.includes('woman')) && (
             <>
               <Link 
                 to="/my-courses" 
@@ -65,9 +65,9 @@ const Header = () => {
           </Link>
           
           <Link 
-            to="/Profile" 
+            to="/UserProfile" 
             className={`px-3 py-2 text-[15px] font-medium rounded-md transition-colors hover:bg-gray-100 hover:text-primary-500 ${isActive('/support') ? 'text-primary-500 font-semibold' : 'text-gray-600'}`}
-          >
+          >w
             Profile
           </Link>
           

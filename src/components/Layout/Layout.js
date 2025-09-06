@@ -2,7 +2,7 @@ import React from 'react';
 import { useAuth } from '../../hooks/useAuth';
 import { useLocation } from 'react-router-dom';
 import Header from '../Header';
-import CompactTopBar from '../CompactTopBar';
+
 import './Layout.css';
 
 const Layout = ({ children }) => {
@@ -23,12 +23,9 @@ const Layout = ({ children }) => {
   return (
     <div className="layout">
       <div className="layout-main">
-        {/* Show compact bar for women/child roles; otherwise use full header */}
-        {learner ? (
-          <CompactTopBar />
-        ) : (
+       
           <Header />
-        )}
+        
         <main className="layout-content">
           {children}
         </main>

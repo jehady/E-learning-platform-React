@@ -49,22 +49,21 @@ class ErrorBoundary extends React.Component {
   };
 
   render() {
-    if (this.state.hasError) {
-      // Render fallback UI
-      return (
-        <div className="error-boundary">
-          <h2>Something went wrong.</h2>
-          <details style={{ whiteSpace: 'pre-wrap' }}>
-            {this.state.error && this.state.error.toString()}
-            <br />
-            {this.state.errorInfo.componentStack}
-          </details>
-          <button onClick={this.resetErrorBoundary}>
-            Try again
-          </button>
-        </div>
-      );
-    }
+  if (this.state.hasError) {
+    return (
+      <div className="error-boundary">
+        <h2>Something went wrong.</h2>
+        <details style={{ whiteSpace: 'pre-wrap' }}>
+          {this.state.error && this.state.error.toString()}
+          <br />
+          {this.state.errorInfo?.componentStack || "No stack trace available"}
+        </details>
+        <button onClick={this.resetErrorBoundary}>
+          Try again
+        </button>
+      </div>
+    );
+  }
 
     // Render children normally
     return this.props.children;

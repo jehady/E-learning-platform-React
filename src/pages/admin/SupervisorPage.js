@@ -2,154 +2,84 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { FaBan, FaSearch, FaFilter, FaEye, FaEdit, FaTrash } from 'react-icons/fa';
 import BanUserModal from '../../components/BanUserModal';
 import { apiService } from '../../utils/api';
+import PromoCodeModal from '../../components/PromoCodeModal'
+import { Navigate } from 'react-router-dom';
+import AddSupervisorModal from '../../components/AddSupervisorModal';
 
-const StudentsPage = () => {
+
+const Supervisorpage = () => {
+    
   const [searchTerm, setSearchTerm] = useState('');
   const [showBanned, setShowBanned] = useState(false);
-  const [students, setStudents] = useState([]);
-  const [loading, setLoading] = useState(false);   
-  const [error, setError] = useState(null);        
+  const [supervisor, setSupervisor] = useState([]);
+  const [loading, setLoading] = useState(false);   // ✅ added
+  const [error, setError] = useState(null);        // ✅ added
 
   const [banModalOpen, setBanModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
 
-  // Inside StudentsPage component
+  const [promoModalOpen, setPromoModalOpen] = useState(false);
+const [selectedSupervisor, setSelectedSupervisor] = useState(null);
+const [addSupervisorModalOpen, setAddSupervisorModalOpen] = useState(false);
 
-const handleBanConfirm = async (reason, expiresDate,user_id) => {
-  if (!selectedUser.id) return;
-
-  try {
-    
-    
-    const expiresAt = `${expiresDate} 10:30:00`; // time is constant
-
-    const res = await apiService.post(`/api/ban_user?user_id=${user_id}`, {
-      reason: reason,
-      expires_at: expiresAt,
-    });
-
-
-
-    if (res.code ===200) {
-          console.log("Ban response:", res);
-          alert(res.message);
-      // Close modal
-    setBanModalOpen(false);
-    setSelectedUser(null);
-
-    // Refresh student list
-    fetchStudents();
-          
-    }
-    else console.log(res.message);
-    
-  } catch (err) {
-    console.error("Error banning student:", err);
-    alert("Failed to ban student");
-  }
-};
-
-const handleShowBannedToggle = async () => {
-  setShowBanned((prev) => !prev);
-
-  if (!showBanned) {
-    // Switching to show banned users
-    try {
-      setLoading(true);
-
-      const res = await apiService.post("/api/banned_users");
-      console.log("Banned users response:", res);
-
-      const bannedUsers = Array.isArray(res) ? res: [];
-
-      // Merge with existing students to get name/email
-      const activeStudentsRes = await apiService.get("/api/show_all_students");
-      const allStudents = Array.isArray(activeStudentsRes) ? activeStudentsRes : [];
-
-      const mappedBanStudents = bannedUsers.map((b) => {
-        const student = allStudents.find((s) => s.id === b.user_id) || {};
-        return {
-          id: b.user_id,
-          name: student.username || `User ${b.user_id}`,
-          email: student.email || "Unknown",
-          avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(student.username || `User${b.user_id}`)}`,
-          status: "Banned",
-          isBanned: true,
-          expiresAt: b.expires_at,
-          reason: b.reason,
-        };
-      });
-
-      setStudents(mappedBanStudents);
-      setError(null);
-    } catch (err) {
-      console.error("Error fetching banned students:", err);
-      setError("Failed to load banned students.");
-      setStudents([]);
-    } finally {
-      setLoading(false);
-    }
-  } else {
-    
-    fetchStudents();
-  }
+const handlePromoClick = (supervisor) => {
+  setSelectedSupervisor(supervisor);
+  setPromoModalOpen(true);
 };
 
 
-// Filter students for display
-const filteredStudents = students.filter((student) => {
-  if (!student) return false;
-
-  const matchesSearch =
-    student.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    student.email?.toLowerCase().includes(searchTerm.toLowerCase());
-
-  return showBanned ? matchesSearch : matchesSearch && !student.isBanned;
-});
-
-
-  // ✅ useCallback so we can reuse fetchStudents
-  const fetchStudents = useCallback(async () => {
+  
+  const fetchSupervisor = useCallback(async () => {
     try {
       setLoading(true);
-      const res = await apiService.get("/api/show_all_students");
-      console.log("Students API response:", res);
+      const res = await apiService.get("/api/show_all_supervisors");
+      console.log("Supervisor API response:", res);
 
-      const studentsFromApi = Array.isArray(res) ? res : [];
+      const supervisorFromApi = Array.isArray(res) ? res : [];
 
-      const mappedStudents = studentsFromApi.map((s) => ({
-        id: s.id,
-        name: s.username,
-        email: s.email,
-        avatar: `https://ui-avatars.com/api/?name=${s.username}`,
-        status: s.is_approved === 1 ? "Active" : "Banned",
-        isBanned: s.is_approved === 0,
+      const mappedSupervisor = supervisorFromApi.map((t) => ({
+        id: t.id,
+        name: t.username,
+        email: t.email,
+        avatar: `https://ui-avatars.com/api/?name=${t.username}`,
+        status: t.is_approved === 1 ? "Active" : "Banned",
+        isBanned: t.is_approved === 0,
       }));
 
-      setStudents(mappedStudents);
+      setSupervisor(mappedSupervisor);
     } catch (err) {
-      console.error("Error fetching students:", err);
-      setError("Failed to load students.");
+      console.error("Error fetching supervisor:", err);
+      setError("Failed to load supervisor.");
     } finally {
       setLoading(false);
     }
   }, []);
 
   useEffect(() => {
-    fetchStudents();
-  }, [fetchStudents]);
+    fetchSupervisor();
+  }, [fetchSupervisor]);
 
-  
+  const filteredSupervisor = supervisor.filter((supervisor) => {
+    const matchesSearch =
+      supervisor.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      supervisor.email.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesBannedFilter = showBanned ? supervisor.isBanned : !supervisor.isBanned;
+    return matchesSearch && matchesBannedFilter;
+  });
+
   const handleBanUser = (user) => {
     setSelectedUser(user);
     setBanModalOpen(true);
   };
 
+  const handleBanSuccess = () => {
+    fetchSupervisor(); 
+  };
 
   const sidebarItems = [
     { icon: '📊', label: 'Dashboard', path: '/subadmin' },
-    { icon: '👩‍🏫', label: 'Teachers', path: '/teachers' },
-    { icon: '🎓', label: 'Students', path: '/students', active: true },
+    { icon: '👩‍🏫', label: 'Teachers', path: '/teachers', active: true },
+    { icon: '🎓', label: 'Students', path: '/students' },
     { icon: '🔔', label: 'Notifications', path: '/notifications' },
     { icon: '🔗', label: 'Integrations', path: '/integrations' },
   ];
@@ -232,27 +162,26 @@ const filteredStudents = students.filter((student) => {
           }}
         >
           <div style={{ fontSize: 28, fontWeight: 700, color: '#5d5fef' }}>
-            Students Management
+            Supervisor Management
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
             <button
-  onClick={handleShowBannedToggle}
-  style={{
-    display: 'flex',
-    alignItems: 'center',
-    gap: 8,
-    background: showBanned ? '#ff4757' : '#f5f6ff',
-    color: showBanned ? '#fff' : '#5d5fef',
-    border: 'none',
-    borderRadius: 8,
-    padding: '8px 16px',
-    fontWeight: 500,
-    cursor: 'pointer',
-  }}
->
-  <FaBan /> {showBanned ? 'Show Active' : 'Show Banned'}
-</button>
-
+              onClick={() => setShowBanned(!showBanned)}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 8,
+                background: showBanned ? '#ff4757' : '#f5f6ff',
+                color: showBanned ? '#fff' : '#5d5fef',
+                border: 'none',
+                borderRadius: 8,
+                padding: '8px 16px',
+                fontWeight: 500,
+                cursor: 'pointer',
+              }}
+            >
+              <FaBan /> {showBanned ? 'Show Active' : 'Show Banned'}
+            </button>
           </div>
         </div>
 
@@ -276,7 +205,7 @@ const filteredStudents = students.filter((student) => {
               }}
             />
             <input
-              placeholder="Search students..."
+              placeholder="Search supervisor..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               style={{
@@ -306,8 +235,6 @@ const filteredStudents = students.filter((student) => {
             <FaFilter /> Filter
           </button>
         </div>
-
-        {/* Students Table */}
         <div
           style={{
             background: '#fff',
@@ -331,8 +258,8 @@ const filteredStudents = students.filter((student) => {
                 }}
               >
                 <div style={{ fontWeight: 700, fontSize: 20, color: '#222' }}>
-                  {showBanned ? 'Banned Students' : 'Active Students'} (
-                  {filteredStudents.length})
+                  {showBanned ? 'Banned Supervisor' : 'Active Supervisor'} (
+                  {filteredSupervisor.length})
                 </div>
                 <div>
                   <button
@@ -350,6 +277,7 @@ const filteredStudents = students.filter((student) => {
                     Export
                   </button>
                   <button
+                    onClick={() => setAddSupervisorModalOpen(true)}
                     style={{
                       border: '1px solid #e5e7eb',
                       background: '#5d5fef',
@@ -360,7 +288,7 @@ const filteredStudents = students.filter((student) => {
                       cursor: 'pointer',
                     }}
                   >
-                    Add Student
+                    Add Supervisor
                   </button>
                 </div>
               </div>
@@ -371,16 +299,16 @@ const filteredStudents = students.filter((student) => {
                 <thead>
                   <tr style={{ color: '#b0b3c7', textAlign: 'left', fontWeight: 600 }}>
                     <th style={{ padding: '12px 8px' }}></th>
-                    <th style={{ padding: '12px 8px' }}>STUDENT NAME</th>
+                    <th style={{ padding: '12px 8px' }}>Supervisor NAME</th>
                     <th style={{ padding: '12px 8px' }}>EMAIL</th>
                     <th style={{ padding: '12px 8px' }}>STATUS</th>
                     <th style={{ padding: '12px 8px' }}>ACTIONS</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {filteredStudents.map((student, idx) => (
+                  {filteredSupervisor.map((supervisor, idx) => (
                     <tr
-                      key={student.id}
+                      key={supervisor.id}
                       style={{ borderTop: idx === 0 ? 'none' : '1px solid #f0f1f3' }}
                     >
                       <td style={{ padding: '12px 8px' }}>
@@ -395,27 +323,27 @@ const filteredStudents = students.filter((student) => {
                         }}
                       >
                         <img
-                          src={student.avatar}
-                          alt={student.name}
+                          src={supervisor.avatar}
+                          alt={supervisor.name}
                           style={{ width: 40, height: 40, borderRadius: '50%' }}
                         />
-                        <span style={{ fontWeight: 600 }}>{student.name}</span>
+                        <span style={{ fontWeight: 600 }}>{supervisor.name}</span>
                       </td>
                       <td style={{ padding: '12px 8px', color: '#666' }}>
-                        {student.email}
+                        {supervisor.email}
                       </td>
                       <td style={{ padding: '12px 8px' }}>
                         <span
                           style={{
-                            background: student.isBanned ? '#ffe6e6' : '#e6f9f0',
-                            color: student.isBanned ? '#ff4757' : '#34c759',
+                            background: supervisor.isBanned ? '#ffe6e6' : '#e6f9f0',
+                            color: supervisor.isBanned ? '#ff4757' : '#34c759',
                             borderRadius: 8,
                             padding: '4px 14px',
                             fontWeight: 500,
                             fontSize: 14,
                           }}
                         >
-                          {student.status}
+                          {supervisor.status}
                         </span>
                       </td>
                       <td style={{ padding: '12px 8px' }}>
@@ -432,18 +360,20 @@ const filteredStudents = students.filter((student) => {
                             <FaEye />
                           </button>
                           <button
-                            style={{
-                              background: 'none',
-                              border: 'none',
-                              color: '#ffb020',
-                              cursor: 'pointer',
-                              padding: '4px',
-                            }}
-                          >
-                            <FaEdit />
-                          </button>
+  onClick={() => handlePromoClick(supervisor)}
+  style={{
+    background: "none",
+    border: "none",
+    color: "#ffb020",
+    cursor: "pointer",
+    padding: "4px",
+  }}
+>
+  <FaEdit />
+</button>
+
                           <button
-                            onClick={() => handleBanUser(student)}
+                            onClick={() => handleBanUser(supervisor)}
                             style={{
                               background: 'none',
                               border: 'none',
@@ -470,7 +400,7 @@ const filteredStudents = students.filter((student) => {
                 }}
               >
                 <div style={{ color: '#b0b3c7', fontSize: 14 }}>
-                  {filteredStudents.length} results
+                  {filteredSupervisor.length} results
                 </div>
                 <div style={{ display: 'flex', gap: 8 }}>
                   {[1, 2, 3, 4, '...', 10, 11].map((n, i) => (
@@ -497,21 +427,40 @@ const filteredStudents = students.filter((student) => {
         </div>
       </main>
 
- 
+      {/* Ban User Modal */}
       {banModalOpen && selectedUser && (
-  <BanUserModal
-    isOpen={banModalOpen}
-    onClose={() =>setBanModalOpen(false)
-   
-    }
-    user={selectedUser}
-    userType="Student"
-    onBanSuccess={(reason, expiresDate) => handleBanConfirm(reason, expiresDate,selectedUser.id)}
+        <BanUserModal
+          isOpen={banModalOpen}
+          onClose={() => setBanModalOpen(false)}
+          user={selectedUser}
+          userType="Supervisor"
+          onBanSuccess={handleBanSuccess}
+        />
+      )}
+      {promoModalOpen && selectedSupervisor && (
+  <PromoCodeModal
+    isOpen={promoModalOpen}
+    onClose={() => setPromoModalOpen(false)}
+    supervisor={selectedSupervisor}
+    onSuccess={() => {
+      alert("Promo code created successfully!");
+    }}
   />
 )}
+
+{addSupervisorModalOpen && (
+   <AddSupervisorModal
+     isOpen={addSupervisorModalOpen}
+     onClose={() => setAddSupervisorModalOpen(false)}
+     onSuccess={() => {
+       alert("Supervisor account created!");
+       fetchSupervisor(); // refresh list
+     }}
+   />
+ )}
 
     </div>
   );
 };
 
-export default StudentsPage;
+export default Supervisorpage;

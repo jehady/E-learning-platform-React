@@ -1,11 +1,13 @@
 import React from 'react';
 
+import { NavLink } from 'react-router-dom';
+
 const sidebarItems = [
-  { icon: '📊', label: 'Dashboard', path: '/subadmin', active: true },
-  { icon: '👩‍🏫', label: 'Teachers', path: '/teachers' },
-  { icon: '🎓', label: 'Students', path: '/students' },
+  { icon: '📊', label: 'Dashboard', path: '/subadmin' },
+  { icon: '👩‍🏫', label: 'Teachers', path: '/SubAdminPage/TeachersPage' },
+  { icon: '🎓', label: 'Students', path: '/SubAdminPage/StudentsPage' },
   { icon: '🔔', label: 'Notifications', path: '/notifications' },
-  { icon: '🔗', label: 'Integrations', path: '/integrations' },
+  { icon: '🔗', label: 'Pending Course', path: '/PendingCoursesPage' },
 ];
 
 const overviewCards = [
@@ -98,23 +100,30 @@ const SubAdminPage = () => (
     <aside style={{ width: 240, background: '#fff', borderRight: '1px solid #f0f1f3', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
       <div>
         <div style={{ padding: '32px 0 24px 32px', fontWeight: 700, fontSize: 24, color: '#5d5fef', letterSpacing: 1 }}>Logo</div>
-        <nav>
-          {sidebarItems.map((item, i) => (
-            <div key={item.label} style={{ 
-              display: 'flex', 
-              alignItems: 'center', 
-              padding: '12px 32px', 
-              background: item.active ? '#f5f6ff' : 'none', 
-              color: item.active ? '#5d5fef' : '#222', 
-              borderRadius: 8, 
-              margin: '0 16px', 
-              fontWeight: 500, 
-              cursor: 'pointer' 
-            }}>
-              <span style={{ fontSize: 18, marginRight: 16 }}>{item.icon}</span> {item.label}
-            </div>
-          ))}
-        </nav>
+<nav>
+  {sidebarItems.map((item) => (
+    <NavLink
+      key={item.label}
+      to={item.path}
+      style={({ isActive }) => ({
+        display: 'flex',
+        alignItems: 'center',
+        padding: '12px 32px',
+        background: isActive ? '#f5f6ff' : 'none',
+        color: isActive ? '#5d5fef' : '#222',
+        borderRadius: 8,
+        margin: '0 16px',
+        fontWeight: 500,
+        cursor: 'pointer',
+        textDecoration: 'none',
+      })}
+    >
+      <span style={{ fontSize: 18, marginRight: 16 }}>{item.icon}</span>
+      {item.label}
+    </NavLink>
+  ))}
+</nav>
+
       </div>
       {/* Banner */}
       <div style={{ background: '#fff6f3', margin: 16, borderRadius: 12, padding: 20, textAlign: 'center' }}>

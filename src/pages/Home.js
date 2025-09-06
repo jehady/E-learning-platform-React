@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import CourseSection from '../components/CourseSection';
-import Banner from '../components/Banner';
+import Banner
+ from '../components/Banner';
 // import Newsletter from '../components/Newsletter';
 import Header from '../components/Header';
 import { apiService } from '../utils/api';
 import { useAuth } from '../hooks/useAuth';
 import './Home.css';
+import Footer from '../components/Footer';
 
 const Home = () => {
   const { user } = useAuth();
@@ -21,13 +23,15 @@ const Home = () => {
       try {
         setLoading(true);
         // Load categories and all courses
-        const [categories, allCourses] = await Promise.all([
+        const [categories, allCourses ,Recommended] = await Promise.all([
           apiService.get('/api/getAllCategory'),
-          apiService.get('/api/getAllcourses')
+          apiService.get('/api/getAllActivecourses'),
+          apiService.get('/api/show_interested_courses')
         ]);
         if (!mounted) return;
+        console.log(allCourses);
 
-        // Map categories by id for quick lookup
+        
         const categoryById = new Map((categories || []).map(c => [c.id, c.category_name]));
 
         // Map API course to UI card shape
@@ -43,12 +47,13 @@ const Home = () => {
         });
 
         const courses = (allCourses || []).map(mapCourse);
+        const recommended1 =(Recommended ||[]).map(mapCourse)
 
         // Build UI arrays while keeping the original section headings
         const interests = Array.isArray(user?.interests) ? user.interests : [];
         const isInterest = (c) => interests.includes(c.category);
 
-        const recommended = (interests.length ? courses.filter(isInterest) : courses)
+        const recommended = (interests.length ? recommended1.filter(isInterest) : recommended1)
           .sort((a,b) => (b.rating||0) - (a.rating||0))
           .slice(0, 8);
 
@@ -104,7 +109,7 @@ const Home = () => {
         loading={loading}
         viewAllLink="/courses/trending" 
       />
-      {/* <Newsletter /> */}
+     <Footer/>
       {error && <div role="alert" style={{ marginTop: 12 }}>{error}</div>}
     </div>
   );

@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { authService } from '../services/authService'; // Import our authentication service
+import { authService } from '../services/authService'; 
 import './SignIn.css';
+import { API_BASE_URL } from '../utils/api';
 
 const SignIn = () => {
   const [loginIdentifier, setLoginIdentifier] = useState('');
@@ -16,34 +17,20 @@ const SignIn = () => {
     setLoading(true);
     
     try {
-      // Authenticate user
       const userData = await authService.signIn(loginIdentifier, password);
       console.log('userData', userData);
-      // Check if email is verified (if needed)
-      // if (!userData.email_verified_at) {
-      //   setError('Please verify your email address before signing in. Check your inbox for the verification link.');
-      //   return;
-      // }
-      
-      console.log('Login successful, data stored:', {
-        token: userData.token ? 'Token received' : 'No token',
-        roles: userData.roles || [],
-        permissions: userData.permissions || []
-      });
-      
-      // Redirect based on role using the auth service
+
       const roles = userData.roles || [];
       if (roles.includes('admin')) {
-        navigate('/admin');
+        navigate('/AdminDashboard');
       } else if (roles.includes('supervisor')) {
-        navigate('/subadmin');
+        navigate('/SubAdminPage');
       } else if (roles.includes('teacher')) {
-        navigate('/home');
+        navigate('/instructor-profile');
       } else {
         navigate('/home');
       }
     } catch (err) {
-      // Handle different types of errors
       if (err.status === 401) {
         setError('Invalid credentials. Please check your username/email and password.');
       } else if (err.status === 403) {
@@ -57,6 +44,10 @@ const SignIn = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleGoogleSignIn = () => {
+    window.location.href = `${API_BASE_URL}/google/redirect`;
   };
 
   return (
@@ -108,8 +99,20 @@ const SignIn = () => {
         <div className="auth-divider">
           <span>or</span>
         </div>
-        
-        {/* Removed Google Sign-In button and functionality */}
+
+        {/* Google Sign-In Button */}
+        <button
+          onClick={handleGoogleSignIn}
+          className="auth-google-btn"
+          disabled={loading}
+        >
+          <img 
+            src="https://developers.google.com/identity/images/g-logo.png" 
+            alt="Google logo" 
+            style={{ width: 20, height: 20, marginRight: 8 }}
+          />
+          Sign in with Google
+        </button>
         
         <div className="auth-footer">
           <p>Don't have an account? <Link to="/signup" className="auth-link">Sign Up</Link></p>

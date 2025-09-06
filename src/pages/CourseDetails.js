@@ -98,7 +98,7 @@ const CourseDetails = () => {
         setVideos(vids);
         setSelectedVideo(vids[0] || null);
 
-        // ✅ Check Stripe redirect for session_id
+       
         const sessionId = new URLSearchParams(window.location.search).get("session_id");
         if (sessionId) {
           const verifyPayment = async () => {
