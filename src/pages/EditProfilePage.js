@@ -49,7 +49,7 @@ const EditProfilePage = () => {
       });
 
       setSuccessMsg("Profile updated successfully!");
-      setTimeout(() => navigate("/instructor-profile"), 1500);
+      setTimeout(() => navigate("/home"), 1500);
     } catch (err) {
       setError(err.message || "Failed to update profile.");
     } finally {

@@ -24,15 +24,27 @@ const AddSupervisorModal = ({ isOpen, onClose, onSuccess }) => {
     setError(null);
 
     try {
-      await apiService.post(
+      const res = await apiService.post(
         "/api/admin/create_supervisor_admin_account?user_type=supervisor",
         formData
       );
-      onSuccess();
-      onClose();
+
+      // ✅ Show the message from API response
+      if (res && res.message) {
+        alert(res.message);
+      }
+
+      onSuccess(); // refresh list
+      onClose();   // close modal
     } catch (err) {
       console.error("Error creating supervisor:", err);
-      setError("Failed to create supervisor. Try again.");
+
+      // If backend sends an error message, show it
+      if (err.response && err.response.data && err.response.data.message) {
+        setError(err.response.data.message);
+      } else {
+        setError("Failed to create supervisor. Try again.");
+      }
     } finally {
       setLoading(false);
     }

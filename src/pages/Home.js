@@ -86,7 +86,7 @@ const Home = () => {
 
   return (
     <div className="page">
-      <Header />
+      
       <CourseSection 
         title="Recommended for you" 
         courses={recommendedCourses} 

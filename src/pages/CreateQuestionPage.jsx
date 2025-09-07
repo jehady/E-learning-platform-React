@@ -4,7 +4,6 @@ import { apiService } from "../utils/api";
 
 const CreateQuestionPage = () => {
   const { examId } = useParams();
-
   const [step, setStep] = useState("question"); // "question" | "options"
   const [questionId, setQuestionId] = useState(null);
 
@@ -56,6 +55,11 @@ const CreateQuestionPage = () => {
       });
 
       console.log("Question created:", res);
+      if (res.code === 400) {
+        alert(res.message);
+       window.location.reload();
+      }
+    
       setQuestionId(res.id);
 
       if (questionData.question_type === "mcq") {

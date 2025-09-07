@@ -76,6 +76,7 @@ const CourseDetails = () => {
         const [detailPayload, categories] = await Promise.all([
           apiService.get(`/api/getCourseDetails/${id}`),
           (async () => {
+            
             const cached = localStorage.getItem('categoriesCache');
             if (cached) return JSON.parse(cached);
             const list = await apiService.get('/api/getAllCategory');
@@ -84,28 +85,22 @@ const CourseDetails = () => {
           })()
         ]);
 
-        if (!mounted) return;
+        if (!mounted) return; 
 
-        const courseData = detailPayload?.course_details || detailPayload;
-        setCourse(courseData);
+        
 
-        const teacherObj = detailPayload?.["teacher name"];
-        if (teacherObj && teacherObj.username) {
-          setTeacherName(teacherObj.username);
-        }
+        const details = detailPayload?.course_details?.[0] || null;
+console.log("details", details);
+setCourse(details);
 
-        const vids = Array.isArray(detailPayload?.videos) ? detailPayload.videos : [];
-        setVideos(vids);
-        setSelectedVideo(vids[0] || null);
+const teacherName = detailPayload?.course_details?.[1]?.teacher_name || '';
+setTeacherName(teacherName);
 
-       
         const sessionId = new URLSearchParams(window.location.search).get("session_id");
         if (sessionId) {
           const verifyPayment = async () => {
             try {
               setPaymentSuccessLoading(true);
-
-              // Call your backend API to verify payment
               const response = await apiService.get(`/api/payment/success?session_id=${sessionId}`);
 
               if (!mounted) return;
@@ -131,8 +126,8 @@ const CourseDetails = () => {
           verifyPayment();
         }
 
-        const cat = (categories || []).find(c => c.id === courseData?.category_id);
-        setCategoryName(cat?.category_name || courseData?.category_name || '');
+        const cat = (categories || []).find(c => c.id === course?.category_id);
+        setCategoryName(cat?.category_name || course?.category_name || '');
       } catch (e) {
         console.error('Error fetching course details:', e);
         if (!mounted) return;
@@ -145,6 +140,11 @@ const CourseDetails = () => {
     return () => { mounted = false; };
   }, [id]);
 
+          useEffect(() => {
+  if (course) {
+    console.log("Updated course state:", course);
+  }
+}, [course]);
   // Buy with points
   const handleProcessPayment1 = async () => {
     try {

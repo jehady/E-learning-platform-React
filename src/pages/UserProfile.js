@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import './InstructorProfile.css';
 import { apiService, API_BASE_URL } from '../utils/api';
-import Header from '../components/Header';
+
+import { useNavigate } from 'react-router-dom';
 
 // Helper to prepend base URL if poster/photo is relative
 function withBase(url) {
@@ -10,10 +11,12 @@ function withBase(url) {
   return `${API_BASE_URL}${url}`;
 }
 
+
 const UserProfile = () => {
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  const navigate =useNavigate();
   useEffect(() => {
     apiService
       .get('/api/my_profile')
@@ -38,7 +41,7 @@ const UserProfile = () => {
 
   return (
     <div className="profile-page">
-        <Header/>
+      
       <main className="profile-main">
         <div className="profile-breadcrumb">Home / User Profile</div>
 
@@ -124,7 +127,12 @@ const UserProfile = () => {
 
           {/* RIGHT SIDEBAR */}
           <aside className="profile-sidebar-section">
-           
+           <button
+                  className="profile-sidebar-edit"
+                  onClick={() => navigate('/EditProfilePage')}
+                >
+                  Edit Profile
+                </button>
 
             <div className="profile-sidebar-certificates">
               <div className="profile-sidebar-label">Account Type</div>

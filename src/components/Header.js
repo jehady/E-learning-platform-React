@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
+import StrikeBadge from './StrikeBadge';
+import WalletBalance from './WalletBalance';
+import AchievementsDropdown from './AchievementsDropdown';
 
 const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -26,58 +29,49 @@ const Header = () => {
         
        
         <nav className={`flex items-center gap-6 md:flex ${isMobileMenuOpen ? 'flex' : 'hidden'} md:relative absolute md:top-auto top-[70px] md:left-auto left-0 md:right-auto right-0 md:flex-row flex-col md:bg-transparent bg-white md:p-0 p-4 md:shadow-none shadow-md z-40`}>
-          <Link 
+         
+          {isAuthenticated && (roles.includes('child') || roles.includes('woman') ) && (
+            <>
+             <Link 
             to="/home" 
             className={`px-3 py-2 text-[15px] font-medium rounded-md transition-colors hover:bg-gray-100 hover:text-primary-500 ${isActive('/') ? 'text-primary-500 font-semibold' : 'text-gray-600'}`}
           >
             Home
           </Link>
-          <Link 
-            to="/Watch lATER" 
-            className={`px-3 py-2 text-[15px] font-medium rounded-md transition-colors hover:bg-gray-100 hover:text-primary-500 ${isActive('/courses') ? 'text-primary-500 font-semibold' : 'text-gray-600'}`}
-          >
-            Courses
-          </Link>
-          
-          {isAuthenticated && (roles.includes('child') || roles.includes('woman')) && (
-            <>
               <Link 
                 to="/my-courses" 
                 className={`px-3 py-2 text-[15px] font-medium rounded-md transition-colors hover:bg-gray-100 hover:text-primary-500 ${isActive('/my-courses') ? 'text-primary-500 font-semibold' : 'text-gray-600'}`}
               >
                 My Courses
               </Link>
-              
+
               <Link 
-                to="/dashboard" 
-                className={`px-3 py-2 text-[15px] font-medium rounded-md transition-colors hover:bg-gray-100 hover:text-primary-500 ${isActive('/dashboard') ? 'text-primary-500 font-semibold' : 'text-gray-600'}`}
-              >
-                Dashboard
-              </Link>
-            </>
-          )}
-          
-          <Link 
-            to="/my-courses" 
-            className={`px-3 py-2 text-[15px] font-medium rounded-md transition-colors hover:bg-gray-100 hover:text-primary-500 ${isActive('/promotions') ? 'text-primary-500 font-semibold' : 'text-gray-600'}`}
-          >
-            MyCourses
-          </Link>
-          
-          <Link 
             to="/UserProfile" 
             className={`px-3 py-2 text-[15px] font-medium rounded-md transition-colors hover:bg-gray-100 hover:text-primary-500 ${isActive('/support') ? 'text-primary-500 font-semibold' : 'text-gray-600'}`}
-          >w
+          >
             Profile
           </Link>
           
+            </>
+          )}
+          {/* Strike + Wallet only for woman/child */}
+{isAuthenticated && (roles.includes("child") || roles.includes("woman")) && (
+  <div className="flex items-center gap-4">
+    <StrikeBadge />
+    <WalletBalance />
+    <AchievementsDropdown/>
+  </div>
+)}
+
+          
+   
           {/* Role-based links */}
-          {isAuthenticated && (roles.includes('admin') || roles.includes('supervisor')) && (
+          {isAuthenticated && (roles.includes('admin') ) && (
             <Link 
               to="/supervisor/dashboard" 
               className={`px-3 py-2 text-[15px] font-medium rounded-md transition-colors hover:bg-gray-100 hover:text-primary-500 ${isActive('/supervisor/dashboard') ? 'text-primary-500 font-semibold' : 'text-gray-600'}`}
             >
-              Approvals
+              Dashboard
             </Link>
           )}
           
@@ -114,18 +108,10 @@ const Header = () => {
             </svg>
           </Link>
           
-          {/* Cart */}
-          <Link to="/cart" className="flex items-center justify-center w-10 h-10 rounded-full text-gray-600 hover:bg-gray-100 transition-colors">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-gray-600">
-              <path d="M3 6h19l-3 10H6L3 6z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round"/>
-              <path d="M8 21a1 1 0 1 0 0-2 1 1 0 0 0 0 2z" stroke="currentColor" strokeWidth="1.5"/>
-              <path d="M17 21a1 1 0 1 0 0-2 1 1 0 0 0 0 2z" stroke="currentColor" strokeWidth="1.5"/>
-            </svg>
-          </Link>
           
           {/* User Profile or Auth Buttons */}
           {isAuthenticated ? (
-            <Link to="/instructor-profile" className="w-10 h-10 rounded-full overflow-hidden border-2 border-gray-200 hover:border-primary-300 transition-colors">
+            <Link  className="w-10 h-10 rounded-full overflow-hidden border-2 border-gray-200 hover:border-primary-300 transition-colors">
               <img 
                 src="https://randomuser.me/api/portraits/women/44.jpg" 
                 alt="User" 

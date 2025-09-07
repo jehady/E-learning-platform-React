@@ -6,6 +6,11 @@ import { apiService, API_BASE_URL } from '../utils/api';
 import { FaComment, FaDeleteLeft } from 'react-icons/fa6';
 import { FaTrash } from 'react-icons/fa';
 
+import { FaStar } from "react-icons/fa"; // star icons
+
+
+
+
 // --- Helper to prepend base URL if relative path ---
 function withBase(path) {
   if (!path) return '';
@@ -63,6 +68,11 @@ const CourseDiscussion = () => {
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState('');
   const [attendancePrompt, setAttendancePrompt] = useState(null); 
+  
+const [showRatingModal, setShowRatingModal] = useState(false);
+const [rating, setRating] = useState(0);
+const [hover, setHover] = useState(0);
+const [submitting, setSubmitting] = useState(false);
 
   // === Fetch exam when tab = Exam ===
   useEffect(() => {
@@ -218,7 +228,13 @@ teacher_name|| 'Unknown Instructor'}</span>
             </div>
             <div className="course-actions">
               <button className="share-button">Share</button>
-              <button className="save-button">Save</button>
+              <button
+  className="save-button"
+  onClick={() => setShowRatingModal(true)}
+>
+  Rate This Course
+</button>
+
             </div>
           </div>
 
@@ -413,6 +429,66 @@ teacher_name|| 'Unknown Instructor'}</span>
                   )}
                 </div>
               )}
+
+              {showRatingModal && (
+  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div className="bg-white rounded-2xl p-6 shadow-lg w-96 text-center">
+      <h2 className="text-xl font-bold mb-4">Rate This Course</h2>
+      
+      {/* Stars */}
+      <div className="flex justify-center space-x-2 mb-4">
+        {[...Array(5)].map((_, index) => {
+          const starValue = index + 1;
+          return (
+            <FaStar
+              key={starValue}
+              size={32}
+              className={`cursor-pointer transition ${
+                starValue <= (hover || rating)
+                  ? "text-yellow-400"
+                  : "text-gray-300"
+              }`}
+              onClick={() => setRating(starValue)}
+              onMouseEnter={() => setHover(starValue)}
+              onMouseLeave={() => setHover(rating)}
+            />
+          );
+        })}
+      </div>
+
+      {/* Buttons */}
+      <div className="flex justify-center gap-3">
+        <button
+          onClick={() => setShowRatingModal(false)}
+          className="px-4 py-2 bg-gray-300 rounded-lg"
+          disabled={submitting}
+        >
+          Cancel
+        </button>
+        <button
+          onClick={async () => {
+            if (!rating) return alert("Please select a rating!");
+            try {
+              setSubmitting(true);
+              await apiService.post(`/api/courses/${id}/Addrate`, { rate: rating });
+              setShowRatingModal(false);
+            } catch (err) {
+              console.error("Rating failed:", err);
+              alert("Failed to submit rating.");
+            } finally {
+              setSubmitting(false);
+            }
+          }}
+          className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
+          disabled={submitting}
+        >
+          {submitting ? "Submitting..." : "Submit"}
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
             </div>
           </div>
         </div>

@@ -68,55 +68,198 @@ function App() {
             <Layout>
               <Routes>
                 {/* Public routes */}
-                <Route path="/" element={<Landing />} />
-                <Route path="/signup" element={<SignUp />} />
-                <Route path="/signin" element={<SignIn />} />
-                <Route path="/reset-password" element={<ResetPassword />} />
-                <Route path="/teacher-signup" element={<TeacherSignUp />} />
-                <Route path="/teacher-verification" element={<TeacherVerification />} />
-                <Route path="/email-verification" element={<EmailVerification />} />
-                <Route path="/Checkout" element={<Checkout />} />
-                <Route path="/WalletPage" element={<WalletPage />} />
-                <Route path="/Cart" element={<Cart />} />
-                <Route path="/TrainerDashboard" element ={<TrainerDashboard/>}/>
-                <Route path ="/SettingsPage" element ={<SettingsPage />}/>
-                <Route path="/Mycourses" element ={<MyCourses/>}/>
-                <Route path="/certificates" element ={<CertificatesPage/>}/>
-                <Route path="/to-do" element = {<TodoPage/>}/>
-                <Route path= "/AdminDashboard" element ={<AdminDashboard/>}/>
-                <Route path="/discussion/:id" element={<CourseDiscussion />} />
-                <Route path="/UserProfile" element={<UserProfile />} />
+                <Route path="/" element={<Landing />} /> /* Anyone */
+                <Route path="/signup" element={<SignUp />} /> /* Anyone */
+                <Route path="/signin" element={<SignIn />} /> /* Anyone */
+                <Route path="/reset-password" element={<ResetPassword />} /> /* Anyone */
+                {/* <Route path="/teacher-signup" element={<TeacherSignUp />} /> /* Delete */ }
+                <Route path="/teacher-verification" element={<TeacherVerification />} /> /*Anyone*/
+                <Route path="/email-verification" element={<EmailVerification />} />  /*Anyone*/
+                {/* <Route path="/Checkout" element={<Checkout />} />   /*Anyone Except the guest*/ }
+                {/* <Route path="/WalletPage" element={<WalletPage />} />   */}
+                {/* <Route path="/Cart" element={<Cart />} /> */}
+                {/* <Route path="/TrainerDashboard" element ={<TrainerDashboard/>}/> */}
+                {/* <Route path ="/SettingsPage" element ={<SettingsPage />}/> */}
+                {/* <Route path="/Mycourses" element ={<MyCourses/>}/>  */}
+                {/* <Route path="/certificates" element ={<CertificatesPage/>}/>  */}
+                {/* <Route path="/to-do" element = {<TodoPage/>}/> */}
+                {/* <Route path= "/AdminDashboard" element ={<AdminDashboard/>}/> 
+                <Route path="/discussion/:id" element={<CourseDiscussion />} /> 
+                <Route path="/UserProfile" element={<UserProfile />} /> 
                 <Route path="/instructor-profile" element={<InstructorProfile />} />
-                <Route path="/CreateCourse" element={<CreateCoursePage />} />
-               <Route path="/add-videos/:courseId" element={<AddVideosPage />} />
+                <Route path="/CreateCourse" element={<CreateCoursePage />} /> 
+               <Route path="/add-videos/:courseId" element={<AddVideosPage />} /> 
                <Route path="/add-exam/:courseId" element={<ExamPage />} />
-               <Route path="/create-question/:examId" element={<CreateQuestionPage />} />
-               <Route path="/Edit-Exam/:id" element={<ExamEditPage />} />
-               <Route path="/exam/:courseId" element={<ExamPageStudent />} />
-               <Route path="/FAQPage" element ={<FAQPage/>}/>
-
-
-               <Route path="/EditProfilePage" element={<EditProfilePage />} />
-               <Route path="/SubAdminPage" element={<SubAdminPage />} />
-               <Route path="/AdminDashboard" element={<AdminDashboard />} />
-                <Route path="/Supervisorpage" element={<Supervisorpage />} />
-                <Route path="/PendingCoursesPage" element={<PendingCoursesPage />} />
-                <Route path="/EditCoursePage/:courseId" element={<EditCoursePage/>} />
-                <Route path="/SubAdminPage/StudentsPage" element={<StudentsPage/>} />
+               <Route path="/create-question/:examId" element={<CreateQuestionPage />} /> 
+               <Route path="/Edit-Exam/:id" element={<ExamEditPage />} /> 
+               <Route path="/exam/:courseId" element={<ExamPageStudent />} /> 
+               <Route path="/FAQPage" element ={<FAQPage/>}/> 
+               <Route path="/EditProfilePage" element={<EditProfilePage />} /> 
+               <Route path="/SubAdminPage" element={<SubAdminPage />} /> 
+               <Route path="/AdminDashboard" element={<AdminDashboard />} />  
+                <Route path="/Supervisorpage" element={<Supervisorpage />} /> 
+                <Route path="/PendingCoursesPage" element={<PendingCoursesPage />} /> 
+          <Route path="/EditCoursePage/:courseId" element={<EditCoursePage/>} /> 
+                <Route path="/SubAdminPage/StudentsPage" element={<StudentsPage/>} /> 
                 <Route path="/SubAdminPage/TeachersPage" element={<TeachersPage/>} />
-                <Route path="/AdminDashboard/TeacherMangment" element={<TeacherMangment/>} />
-                <Route path="/AdminDashboard/CategoryManagement" element={<CategoryManagement/>} />
-                <Route path="/AdminDashboard/FAQManagement" element={<FAQManagement/>} />
-                <Route path="/my-Interset" element={<CategoryPage/>} />
-
-
-
-
+                <Route path="/AdminDashboard/TeacherMangment" element={<TeacherMangment/>} /> 
+                <Route path="/AdminDashboard/CategoryManagement" element={<CategoryManagement/>} />  */}
                 
+                {/* <Route path="/AdminDashboard/FAQManagement" element={<FAQManagement/>} />  */}
+                <Route path="/my-Interset" element={<CategoryPage/>} /> /*  Anyone  */
 
-                
+
+
+
+
 
                 {/* User routes (guest, child, woman) */}
+                {/* Protected routes */}
+                <Route path="/Mycourses" element={
+                  <ProtectedRoute allowedRoles={['child','teacher','woman']}>
+                    <MyCourses />
+                  </ProtectedRoute>
+                } /> /* child teacher woman */
+
+                <Route path= "/AdminDashboard" element={
+                  <ProtectedRoute allowedRoles={['admin']}>
+                    <AdminDashboard />
+                  </ProtectedRoute>
+                } /> /*OnlyADMIN*/
+
+                <Route path="/discussion/:id" element={
+                  <ProtectedRoute allowedRoles={['child','teacher','woman']}>
+                    <CourseDiscussion />
+                  </ProtectedRoute>
+                } /> /* child teacher woman */
+
+                <Route path="/UserProfile" element={
+                  <ProtectedRoute allowedRoles={['child','woman']}>
+                    <UserProfile />
+                  </ProtectedRoute>
+                } /> /* child  woman */
+
+                <Route path="/instructor-profile" element={
+                  <ProtectedRoute allowedRoles={['teacher']}>
+                    <InstructorProfile />
+                  </ProtectedRoute>
+                } />/*  teacher  */
+
+                <Route path="/CreateCourse" element={
+                  <ProtectedRoute allowedRoles={['teacher']}>
+                    <CreateCoursePage />
+                  </ProtectedRoute>
+                } /> /*  teacher  */
+
+                <Route path="/add-videos/:courseId" element={
+                  <ProtectedRoute allowedRoles={['teacher']}>
+                    <AddVideosPage />
+                  </ProtectedRoute>
+                } /> /*  teacher  */
+
+                <Route path="/add-exam/:courseId" element={
+                  <ProtectedRoute allowedRoles={['teacher']}>
+                    <ExamPage />
+                  </ProtectedRoute>
+                } /> /*  teacher  */
+
+                <Route path="/create-question/:examId" element={
+                  <ProtectedRoute allowedRoles={['teacher']}>
+                    <CreateQuestionPage />
+                  </ProtectedRoute>
+                } /> /*  teacher  */
+
+                <Route path="/Edit-Exam/:id" element={
+                  <ProtectedRoute allowedRoles={['teacher']}>
+                    <ExamEditPage />
+                  </ProtectedRoute>
+                } /> /*  teacher  */
+
+                <Route path="/exam/:courseId" element={
+                  <ProtectedRoute allowedRoles={['child','woman']}>
+                    <ExamPageStudent />
+                  </ProtectedRoute>
+                } /> /* child  woman */
+
+                <Route path="/FAQPage" element={
+                  <ProtectedRoute allowedRoles={['admin']}>
+                    <FAQPage />
+                  </ProtectedRoute>
+                } /> /* admin */
+
+                <Route path="/EditProfilePage" element={
+                  <ProtectedRoute allowedRoles={['child','teacher','woman']}>
+                    <EditProfilePage />
+                  </ProtectedRoute>
+                } /> /* child teacher woman */
+
+                <Route path="/SubAdminPage" element={
+                  <ProtectedRoute allowedRoles={['supervisor']}>
+                    <SubAdminPage />
+                  </ProtectedRoute>
+                } /> /*  supervisor  */
+
+                <Route path="/AdminDashboard" element={
+                  <ProtectedRoute allowedRoles={['supervisor']}>
+                    <AdminDashboard />
+                  </ProtectedRoute>
+                } /> /*  supervisor  */
+
+                <Route path="/Supervisorpage" element={
+                  <ProtectedRoute allowedRoles={['admin']}>
+                    <Supervisorpage />
+                  </ProtectedRoute>
+                } /> /*  Admin  */
+
+                <Route path="/PendingCoursesPage" element={
+                  <ProtectedRoute allowedRoles={['supervisor']}>
+                    <PendingCoursesPage />
+                  </ProtectedRoute>
+                } /> /*  supervisor  */
+
+                <Route path="/EditCoursePage/:courseId" element={
+                  <ProtectedRoute allowedRoles={['teacher']}>
+                    <EditCoursePage />
+                  </ProtectedRoute>
+                } /> /*  teacher  */
+
+                <Route path="/SubAdminPage/StudentsPage" element={
+                  <ProtectedRoute allowedRoles={['supervisor','admin']}>
+                    <StudentsPage />
+                  </ProtectedRoute>
+                } /> /*  supervisor && admin  */
+
+                <Route path="/SubAdminPage/TeachersPage" element={
+                  <ProtectedRoute allowedRoles={['supervisor']}>
+                    <TeachersPage />
+                  </ProtectedRoute>
+                } /> /*  supervisor  */
+
+                <Route path="/AdminDashboard/TeacherMangment" element={
+                  <ProtectedRoute allowedRoles={['admin']}>
+                    <TeacherMangment />
+                  </ProtectedRoute>
+                } /> /*  admin  */
+
+                <Route path="/AdminDashboard/CategoryManagement" element={
+                  <ProtectedRoute allowedRoles={['admin']}>
+                    <CategoryManagement />
+                  </ProtectedRoute>
+                } /> /*  admin  */
+
+                <Route path="/AdminDashboard/FAQManagement" element={
+                  <ProtectedRoute allowedRoles={['admin']}>
+                    <FAQManagement />
+                  </ProtectedRoute>
+                } /> /*  admin  */
+
+                <Route path="/my-Interset" element={
+                  <ProtectedRoute allowedRoles={['guest','child','woman','teacher','supervisor','admin']}>
+                    <CategoryPage />
+                  </ProtectedRoute>
+                } /> /*  Anyone  */
+
+
                 <Route path="/home" element={
                   <ProtectedRoute allowedRoles={['guest', 'child', 'woman']}>
                     <Home />
@@ -170,7 +313,7 @@ function App() {
                   </ProtectedRoute>
                 } />
                 <Route path="/checkout" element={
-                  <ProtectedRoute allowedRoles={['guest', 'child', 'woman']}>
+                  <ProtectedRoute allowedRoles={['child', 'woman']}>
                     <Checkout />
                   </ProtectedRoute>
                 } />
